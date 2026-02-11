@@ -1,0 +1,258 @@
+:root {
+  --black: #0b0b0b;
+  --white: #ffffff;
+  --cream: #f3ecdf;
+  --cream-deep: #e4dbc9;
+  --text-soft: #454545;
+  --shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+  --radius: 18px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  color: var(--black);
+  background: radial-gradient(circle at top right, var(--cream-deep), var(--cream) 60%);
+}
+
+a {
+  color: inherit;
+}
+
+.container {
+  width: min(1080px, 92vw);
+  margin: 0 auto;
+}
+
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+  background: rgba(243, 236, 223, 0.9);
+  border-bottom: 1px solid rgba(11, 11, 11, 0.15);
+}
+
+.nav {
+  min-height: 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.brand {
+  text-decoration: none;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.nav-links a {
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.hero {
+  padding: 5.5rem 0 4rem;
+}
+
+.kicker {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0;
+  color: var(--text-soft);
+}
+
+h1 {
+  font-size: clamp(2rem, 5vw, 4.3rem);
+  line-height: 1.04;
+  margin: 0.8rem 0;
+  max-width: 16ch;
+}
+
+.hero-copy {
+  max-width: 52ch;
+  font-size: 1.1rem;
+  color: var(--text-soft);
+}
+
+.hero-actions {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+  margin-top: 1.4rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  border: 1.5px solid var(--black);
+  border-radius: 999px;
+  padding: 0.4rem 1rem;
+  font-weight: 700;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.btn-primary {
+  background: var(--black);
+  color: var(--white);
+}
+
+.btn-ghost {
+  background: transparent;
+}
+
+.section {
+  margin-bottom: 4rem;
+}
+
+.section h2 {
+  font-size: clamp(1.55rem, 3.3vw, 2.2rem);
+  margin: 0 0 1rem;
+}
+
+.section p {
+  max-width: 70ch;
+  color: var(--text-soft);
+}
+
+.section-head {
+  margin-bottom: 1rem;
+}
+
+.service-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+}
+
+.card {
+  background: var(--white);
+  border: 1px solid rgba(11, 11, 11, 0.14);
+  border-radius: var(--radius);
+  padding: 1.1rem;
+  box-shadow: var(--shadow);
+}
+
+.card h3 {
+  margin-top: 0;
+}
+
+.reference-form {
+  display: grid;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.reference-form label {
+  display: grid;
+  gap: 0.4rem;
+  color: var(--black);
+  font-weight: 600;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 0.72rem 0.8rem;
+  border-radius: 10px;
+  border: 1px solid rgba(11, 11, 11, 0.3);
+  font: inherit;
+}
+
+textarea {
+  resize: vertical;
+}
+
+.references-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+
+.reference-card {
+  position: relative;
+}
+
+.reference-meta {
+  margin-bottom: 0.8rem;
+  font-size: 0.9rem;
+  color: var(--text-soft);
+}
+
+.remove-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: 0;
+  background: transparent;
+  font-size: 0.85rem;
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+.instagram-controls {
+  display: grid;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.instagram-form {
+  display: grid;
+  gap: 0.45rem;
+}
+
+.instagram-form label {
+  font-weight: 600;
+}
+
+.instagram-grid {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+}
+
+.instagram-card {
+  background: var(--white);
+  border: 1px solid rgba(11, 11, 11, 0.14);
+  border-radius: var(--radius);
+  padding: 0.75rem;
+  box-shadow: var(--shadow);
+}
+
+.contact a {
+  font-weight: 700;
+}
+
+.site-footer {
+  border-top: 1px solid rgba(11, 11, 11, 0.15);
+  padding: 1rem 0 2rem;
+  text-align: center;
+  color: var(--text-soft);
+}
+
+@media (max-width: 760px) {
+  .nav {
+    padding: 0.8rem 0;
+  }
+
+  .hero {
+    padding-top: 4.5rem;
+  }
+}

@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>NISH | DJ</title>
+    <meta
+      name="description"
+      content="NISH is a DJ delivering high-energy sets for clubs, private parties, and brand events."
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <header class="site-header">
+      <nav class="nav container">
+        <a class="brand" href="#home">NISH</a>
+        <div class="nav-links">
+          <a href="#about">About</a>
+          <a href="#services">Services</a>
+          <a href="#references">References</a>
+          <a href="#instagram">Instagram</a>
+          <a href="#contact">Contact</a>
+        </div>
+      </nav>
+    </header>
+
+    <main id="home">
+      <section class="hero container">
+        <p class="kicker">DJ | Events | Nightlife</p>
+        <h1>Move the room with NISH.</h1>
+        <p class="hero-copy">
+          Open-format DJ sets tailored for weddings, private events, clubs, and branded experiences.
+        </p>
+        <div class="hero-actions">
+          <a class="btn btn-primary" href="#contact">Book Now</a>
+          <a class="btn btn-ghost" href="#references">See References</a>
+        </div>
+      </section>
+
+      <section class="section container" id="about">
+        <h2>About</h2>
+        <p>
+          I am NISH, a DJ focused on creating memorable nights through smooth transitions, crowd reading, and clean
+          energy from start to finish. Replace this copy with your own bio, music style, and cities you serve.
+        </p>
+      </section>
+
+      <section class="section container" id="services">
+        <h2>Services</h2>
+        <div class="service-grid">
+          <article class="card">
+            <h3>Private Events</h3>
+            <p>Birthdays, engagements, and milestone celebrations with custom playlists.</p>
+          </article>
+          <article class="card">
+            <h3>Weddings</h3>
+            <p>Ceremony, cocktail, and reception flow with high-quality sound and MC support.</p>
+          </article>
+          <article class="card">
+            <h3>Clubs & Lounges</h3>
+            <p>Open-format and genre-focused sets designed for packed dance floors.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section container" id="references">
+        <div class="section-head">
+          <h2>References</h2>
+          <p>Add and manage testimonials below. Your entries are saved in this browser.</p>
+        </div>
+
+        <form class="reference-form card" id="reference-form">
+          <label>
+            Client / Venue
+            <input id="ref-name" type="text" required placeholder="Example: The Midtown Lounge" />
+          </label>
+          <label>
+            Event Type
+            <input id="ref-event" type="text" required placeholder="Example: Corporate Holiday Party" />
+          </label>
+          <label>
+            Reference
+            <textarea
+              id="ref-quote"
+              required
+              rows="4"
+              placeholder="Example: NISH kept the dance floor packed all night."
+            ></textarea>
+          </label>
+          <button class="btn btn-primary" type="submit">Add Reference</button>
+        </form>
+
+        <div class="references-grid" id="references-grid"></div>
+      </section>
+
+      <section class="section container" id="instagram">
+        <div class="section-head">
+          <h2>Instagram</h2>
+          <p>Connect your profile and add post links to embed previews directly on your site.</p>
+        </div>
+
+        <div class="instagram-controls card">
+          <a class="btn btn-ghost" href="https://instagram.com/dj.atek" target="_blank" rel="noreferrer"
+            >Visit @dj.atek</a
+          >
+          <form id="instagram-form" class="instagram-form">
+            <label for="instagram-url">Instagram Post URL</label>
+            <input
+              id="instagram-url"
+              type="url"
+              required
+              placeholder="https://www.instagram.com/p/your-post-id/"
+            />
+            <button class="btn btn-primary" type="submit">Add Post Embed</button>
+          </form>
+        </div>
+
+        <div class="instagram-grid" id="instagram-grid"></div>
+      </section>
+
+      <section class="section container contact" id="contact">
+        <h2>Contact</h2>
+        <p>Email: <a href="mailto:djatek1@gmail.com">djatek1@gmail.com</a></p>
+        <p>Phone: <a href="tel:+16309228776">630-922-8776</a></p>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>© <span id="year"></span> NISH. All rights reserved.</p>
+    </footer>
+
+    <script async src="https://www.instagram.com/embed.js"></script>
+    <script src="script.js"></script>
+  </body>
+</html>
