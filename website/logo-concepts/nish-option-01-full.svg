@@ -1,0 +1,23 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="o1a" x1="84" y1="86" x2="326" y2="332" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#E5ECEE"/>
+      <stop offset="1" stop-color="#D8E1E3"/>
+    </linearGradient>
+  </defs>
+
+  <circle cx="205" cy="210" r="122" fill="url(#o1a)" stroke="#708891" stroke-width="8"/>
+  <circle cx="205" cy="210" r="92" stroke="#9BB0B6" stroke-width="3"/>
+  <circle cx="205" cy="210" r="64" stroke="#AFC0C5" stroke-width="2"/>
+  <circle cx="205" cy="210" r="12" fill="#6D848D"/>
+
+  <path d="M96 206C96 145 145 96 205 96C265 96 314 145 314 206" stroke="#566B73" stroke-width="16" stroke-linecap="round"/>
+  <rect x="82" y="184" width="24" height="58" rx="10" fill="#566B73"/>
+  <rect x="304" y="184" width="24" height="58" rx="10" fill="#566B73"/>
+
+  <path d="M153 284V136H179L235 214V136H259V284H235L179 206V284H153Z" fill="#2F4046"/>
+
+  <text x="360" y="247" font-size="158" letter-spacing="5" font-family="Avenir Next, Montserrat, Poppins, sans-serif" font-weight="800" fill="#26363C">NISH</text>
+  <text x="906" y="247" font-size="62" letter-spacing="10" font-family="Avenir Next, Montserrat, Poppins, sans-serif" font-weight="600" fill="#6F8790">DJ</text>
+  <line x1="360" y1="286" x2="920" y2="286" stroke="#B8C6CB" stroke-width="4" stroke-linecap="round"/>
+</svg>

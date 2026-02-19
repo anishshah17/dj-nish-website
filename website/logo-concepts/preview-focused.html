@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nish Wordmark Redesign</title>
+  <style>
+    :root {
+      --bg: #f3f6fa;
+      --text: #0f1722;
+      --muted: #5e6d7a;
+      --card: #ffffff;
+      --border: #dbe4ec;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 28px;
+      font-family: "Avenir Next", "Montserrat", "Poppins", sans-serif;
+      color: var(--text);
+      background: radial-gradient(circle at 10% -10%, #ffffff 0%, var(--bg) 60%);
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(1.4rem, 2.8vw, 2.1rem); }
+    p { margin: 0 0 20px; color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 14px;
+    }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+      box-shadow: 0 8px 24px rgba(15, 24, 36, 0.06);
+    }
+    .label {
+      margin: 0 0 8px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.2px;
+    }
+    img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+      border: 1px solid #e8eef4;
+      background: #f8fbff;
+    }
+  </style>
+</head>
+<body>
+  <h1>Nish Wordmark Redesign</h1>
+  <p>Two new concepts based on your note: no badge container, stronger music elements integrated into the wordmark.</p>
+
+  <div class="grid">
+    <div class="card">
+      <div class="label">Concept A: Record Behind NISH</div>
+      <img src="nish-wordmark-record-bg.svg" alt="Nish with record background" />
+    </div>
+    <div class="card">
+      <div class="label">Concept B: Headphones Plug Into H</div>
+      <img src="nish-wordmark-headphone-h.svg" alt="Nish with headphone cable into H" />
+    </div>
+  </div>
+</body>
+</html>
