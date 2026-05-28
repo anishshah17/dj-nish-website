@@ -1,15 +1,15 @@
 import { AnimatePresence, motion } from "framer-motion";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 import Navbar from "./sections/Navbar";
 import Hero from "./sections/Hero";
 import About from "./sections/About";
-import Music from "./sections/Music";
 import Events from "./sections/Events";
 import Records from "./sections/Records";
 import Gallery from "./sections/Gallery";
+import Instagram from "./sections/Instagram";
 import Booking from "./sections/Booking";
 import Footer from "./sections/Footer";
 
@@ -18,14 +18,9 @@ gsap.registerPlugin(ScrollTrigger);
 // ─── Loading screen ───────────────────────────────────────────────────────────
 function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [count, setCount] = useState(0);
-  const [wordIndex, setWordIndex] = useState(0);
-  const words = useMemo(() => ["Perform", "Create", "Inspire"], []);
 
   useEffect(() => {
     document.body.classList.add("loading");
-    const wordTimer = window.setInterval(() => {
-      setWordIndex((current) => (current + 1) % words.length);
-    }, 900);
 
     const start = performance.now();
     let frame = 0;
@@ -52,10 +47,9 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
 
     frame = requestAnimationFrame(tick);
     return () => {
-      clearInterval(wordTimer);
       cancelAnimationFrame(frame);
     };
-  }, [words, onComplete]);
+  }, [onComplete]);
 
   return (
     <motion.div
@@ -63,28 +57,53 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      <div className="relative mb-12 flex flex-col items-center gap-4">
-        <img src="/nish-logo.png" alt="DJ Nish" className="h-16 w-auto rounded-xl bg-white p-2" />
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={wordIndex}
-            className="text-sm uppercase tracking-[0.4em] text-muted"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -8 }}
-            transition={{ duration: 0.3 }}
-          >
-            {words[wordIndex]}
-          </motion.p>
-        </AnimatePresence>
+      {/* Animated waveform bars */}
+      <div className="mb-12 flex items-end justify-center gap-1.5">
+        {Array.from({ length: 8 }).map((_, i) => (
+          <motion.div
+            key={i}
+            className="w-1.5 bg-gradient-to-t from-pink to-blue rounded-full"
+            style={{ height: "8px" }}
+            animate={{ height: [8, 32, 8] }}
+            transition={{
+              duration: 0.6,
+              delay: i * 0.08,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
       </div>
-      <div className="relative h-px w-48 overflow-hidden bg-stroke">
+
+      {/* Logo and text */}
+      <div className="relative mb-8 flex flex-col items-center gap-3">
+        <img src="/nish-logo.png" alt="DJ Nish" className="h-16 w-auto rounded-xl bg-white p-2" />
+        <motion.p
+          className="text-xs uppercase tracking-[0.4em] text-muted font-mono"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          SOUND CHECK
+        </motion.p>
+      </div>
+
+      {/* Progress bar */}
+      <div className="relative h-px w-48 overflow-hidden bg-stroke rounded-full">
         <motion.div
           className="absolute inset-y-0 left-0 accent-gradient"
           style={{ width: `${count}%` }}
         />
       </div>
-      <p className="mt-4 font-display text-4xl font-bold gradient-text">{count}%</p>
+
+      {/* Percentage */}
+      <motion.p
+        className="mt-4 font-display text-4xl font-bold gradient-text tracking-wider"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.2 }}
+      >
+        {count}%
+      </motion.p>
     </motion.div>
   );
 }
@@ -108,8 +127,8 @@ function Stats() {
             transition={{ duration: 0.75 }}
             viewport={{ once: true }}
           >
-            <p className="font-display text-6xl italic gradient-text md:text-7xl">{value}</p>
-            <p className="mt-4 text-xs uppercase tracking-[0.25em] text-muted">{label}</p>
+            <p className="font-display text-6xl font-bold gradient-text md:text-7xl">{value}</p>
+            <p className="mt-4 text-xs uppercase tracking-[0.25em] text-muted font-mono">{label}</p>
           </motion.div>
         ))}
       </div>
@@ -136,11 +155,11 @@ export default function App() {
       >
         <Hero />
         <About />
-        <Music />
         <Events onNavigate={(id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })} />
         <Records onNavigate={(id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })} />
         <Gallery />
         <Stats />
+        <Instagram />
         <Booking />
         <Footer />
       </motion.main>

@@ -1,142 +1,121 @@
-import { useRef, useEffect, useState } from "react";
-import { motion, useInView, useAnimation } from "framer-motion";
-import { gsap } from "gsap";
+import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
+import gsap from "gsap";
 
 export default function Hero() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.4 });
-  const controls = useAnimation();
-  const [loaded, setLoaded] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const titleRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isInView) return;
+    if (!titleRef.current) return;
 
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        onComplete: () => setLoaded(true),
-      });
-      tl.fromTo(
-        "#hero-name .char",
-        { opacity: 0, y: 80, rotateX: -40 },
-        { opacity: 1, y: 0, rotateX: 0, duration: 0.8, stagger: 0.08, ease: "back.out(1.4)" },
-      )
-        .fromTo(
-          "#hero-subtitle",
+      // Zoom-in effect on title
+      gsap.fromTo(
+        titleRef.current,
+        { scale: 0.3, opacity: 0 },
+        { scale: 1, opacity: 1, duration: 1.2, ease: "back.out(1.2)" }
+      );
+
+      // Stagger in the role text
+      const roles = titleRef.current?.querySelectorAll(".role-text");
+      if (roles) {
+        gsap.fromTo(
+          roles,
           { opacity: 0, y: 20 },
-          { opacity: 1, y: 0, duration: 0.6, ease: "power2.out" },
-          "-=0.3",
-        )
-        .fromTo(
-          "#hero-cta-group",
-          { opacity: 0, y: 16 },
-          { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" },
-          "-=0.2",
+          { opacity: 1, y: 0, duration: 0.6, stagger: 0.15, delay: 0.4, ease: "power2.out" }
         );
-    }, ref);
+      }
+    }, containerRef);
 
     return () => ctx.revert();
-  }, [isInView]);
-
-  const name = "DJ NISH";
-  const chars = name.split("");
+  }, []);
 
   return (
     <section
-      ref={ref}
-      className="relative flex min-h-screen items-center justify-center overflow-hidden px-6"
+      ref={containerRef}
+      id="home"
+      className="relative min-h-screen w-full overflow-hidden bg-bg pt-24 md:pt-32"
     >
       {/* Animated gradient blobs */}
-      <div className="pointer-events-none absolute inset-0 overflow-hidden">
+      <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute -top-32 left-1/4 h-[28rem] w-[28rem] rounded-full opacity-30 blur-[120px]"
-          animate={{
-            x: [0, 80, -40, 0],
-            y: [0, -60, 60, 0],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          style={{ background: "linear-gradient(135deg, #f30682, #b72cdb)" }}
+          className="absolute -top-40 -left-40 w-80 h-80 bg-pink/20 rounded-full blur-3xl"
+          animate={{ x: [0, 40, 0], y: [0, 60, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
         />
         <motion.div
-          className="absolute -bottom-32 right-1/4 h-[28rem] w-[28rem] rounded-full opacity-20 blur-[120px]"
-          animate={{
-            x: [0, -60, 40, 0],
-            y: [0, 50, -30, 0],
-          }}
-          transition={{ duration: 18, repeat: Infinity, ease: "linear", delay: 2 }}
-          style={{ background: "linear-gradient(135deg, #445df3, #08bde8)" }}
+          className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue/20 rounded-full blur-3xl"
+          animate={{ x: [0, -40, 0], y: [0, -60, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>
 
-      <div className="relative z-10 flex flex-col items-center gap-8 text-center">
-        {/* Name with character animation */}
-        <div id="hero-name" className="flex flex-wrap justify-center gap-[0.15em] sm:gap-[0.2em]">
-          {chars.map((ch, i) =>
-            ch === " " ? (
-              <motion.span
-                key={i}
-                className="inline-block w-[0.5em] sm:w-[0.6em]"
-              />
-            ) : (
-              <motion.span
-                key={i}
-                className="char text-7xl font-display font-bold leading-none tracking-tight md:text-9xl lg:text-[11rem]"
-                style={{
-                  background: "linear-gradient(90deg, #f30682 0%, #b72cdb 36%, #445df3 67%, #08bde8 100%)",
-                  WebkitBackgroundClip: "text",
-                  backgroundClip: "text",
-                  color: "transparent",
-                }}
-              />
-            ),
-          )}
-        </div>
-
-        {/* Subtitle */}
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-120px)] px-6 text-center md:px-10">
+        {/* Main title with zoom effect */}
         <motion.div
-          id="hero-subtitle"
-          className="max-w-md text-lg text-muted sm:text-xl"
+          ref={titleRef}
+          className="mb-8 flex flex-col items-center gap-4"
+          initial={{ scale: 0.3, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 1.2, ease: "backOut" }}
         >
-          DJ / Producer / Sound Architect
+          <h1 className="font-display text-7xl md:text-9xl font-black leading-none gradient-text tracking-tighter">
+            DJ NISH
+          </h1>
         </motion.div>
 
-        {/* CTA buttons */}
+        {/* Role text */}
         <motion.div
-          id="hero-cta-group"
-          className="flex flex-wrap justify-center gap-4"
+          className="mb-8 flex flex-wrap items-center justify-center gap-3 md:gap-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.8 }}
         >
-          <motion.button
-            className="accent-gradient rounded-full px-8 py-3 text-sm font-semibold text-white transition-all duration-200 hover:shadow-[0_0_30px_rgba(243,6,130,0.4)] hover:brightness-110 active:scale-95"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={() =>
-              document.getElementById("music")?.scrollIntoView({ behavior: "smooth" })
-            }
+          {["DJ", "Producer", "Sound Architect"].map((role, i) => (
+            <motion.span
+              key={role}
+              className="role-text text-sm md:text-base uppercase tracking-[0.3em] text-muted font-mono"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.4 + i * 0.15, duration: 0.6 }}
+            >
+              {role}
+            </motion.span>
+          ))}
+        </motion.div>
+
+        {/* CTA Buttons */}
+        <motion.div
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-12"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 1, duration: 0.6 }}
+        >
+          <button className="accent-gradient rounded-full px-8 py-3.5 text-sm font-bold text-white uppercase tracking-wider transition-all hover:shadow-[0_0_24px_rgba(243,6,130,0.6)] hover:brightness-110 active:scale-95">
+            Listen to Mixes
+          </button>
+          <button
+            onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
+            className="gradient-ring relative rounded-full text-sm text-text-primary"
           >
-            Listen to My Mixes
-          </motion.button>
-          <motion.a
-            href="#booking"
-            className="rounded-full border border-stroke px-8 py-3 text-sm font-semibold text-text-primary transition-all duration-200 hover:border-pink hover:text-pink active:scale-95"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-          >
-            Book a Set
-          </motion.a>
+            <span className="relative block rounded-full bg-bg px-8 py-3.5 font-bold uppercase tracking-wider">
+              Book a Set
+            </span>
+          </button>
         </motion.div>
 
         {/* Scroll indicator */}
         <motion.div
-          className="scroll-indicator mt-12 flex flex-col items-center gap-2 text-muted"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: loaded ? 1 : 0 }}
-          transition={{ delay: 0.5 }}
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          animate={{ y: [0, 10, 0] }}
+          transition={{ duration: 2, repeat: Infinity }}
         >
-          <span className="text-xs">Scroll</span>
-          <motion.div
-            className="h-10 w-px bg-gradient-to-b from-muted to-transparent"
-            animate={{ scaleY: [1, 1.5, 1] }}
-            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-          />
+          <span className="text-xs uppercase tracking-[0.2em] text-muted font-mono">Scroll</span>
+          <svg className="w-5 h-5 text-muted" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+          </svg>
         </motion.div>
       </div>
     </section>
