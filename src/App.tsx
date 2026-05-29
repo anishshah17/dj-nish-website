@@ -6,8 +6,6 @@ import { useEffect, useRef, useState } from "react";
 import Navbar from "./sections/Navbar";
 import Hero from "./sections/Hero";
 import About from "./sections/About";
-import Events from "./sections/Events";
-import Records from "./sections/Records";
 import Gallery from "./sections/Gallery";
 import Instagram from "./sections/Instagram";
 import Booking from "./sections/Booking";
@@ -57,53 +55,70 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Animated waveform bars */}
-      <div className="mb-12 flex items-end justify-center gap-1.5">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <motion.div
-            key={i}
-            className="w-1.5 bg-gradient-to-t from-pink to-blue rounded-full"
-            style={{ height: "8px" }}
-            animate={{ height: [8, 32, 8] }}
-            transition={{
-              duration: 0.6,
-              delay: i * 0.08,
-              repeat: Infinity,
-              ease: "easeInOut",
-            }}
-          />
-        ))}
-      </div>
-
-      {/* Logo and text */}
-      <div className="relative mb-8 flex flex-col items-center gap-3">
-        <img src="/nish-logo.png" alt="DJ Nish" className="h-16 w-auto rounded-xl bg-white p-2" />
-        <motion.p
-          className="text-xs uppercase tracking-[0.4em] text-muted font-mono"
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          SOUND CHECK
-        </motion.p>
-      </div>
-
-      {/* Progress bar */}
-      <div className="relative h-px w-48 overflow-hidden bg-stroke rounded-full">
+      {/* Full-screen animated background */}
+      <div className="absolute inset-0 overflow-hidden">
         <motion.div
-          className="absolute inset-y-0 left-0 accent-gradient"
-          style={{ width: `${count}%` }}
+          className="absolute -top-40 -left-40 w-96 h-96 bg-pink/30 rounded-full blur-3xl"
+          animate={{ x: [0, 60, 0], y: [0, 80, 0] }}
+          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+        />
+        <motion.div
+          className="absolute -bottom-40 -right-40 w-96 h-96 bg-blue/30 rounded-full blur-3xl"
+          animate={{ x: [0, -60, 0], y: [0, -80, 0] }}
+          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
         />
       </div>
 
-      {/* Percentage */}
-      <motion.p
-        className="mt-4 font-display text-4xl font-bold gradient-text tracking-wider"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.2 }}
-      >
-        {count}%
-      </motion.p>
+      {/* Content */}
+      <div className="relative z-10 flex flex-col items-center justify-center gap-8">
+        {/* Animated waveform bars */}
+        <div className="flex items-end justify-center gap-2">
+          {Array.from({ length: 12 }).map((_, i) => (
+            <motion.div
+              key={i}
+              className="w-2 bg-gradient-to-t from-pink to-blue rounded-full"
+              style={{ height: "8px" }}
+              animate={{ height: [8, 48, 8] }}
+              transition={{
+                duration: 0.8,
+                delay: i * 0.06,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Logo and text */}
+        <div className="relative flex flex-col items-center gap-4">
+          <img src="/nish-logo.png" alt="DJ Nish" className="h-24 w-auto rounded-xl bg-white p-3" />
+          <motion.p
+            className="text-sm uppercase tracking-[0.4em] text-muted font-display font-bold"
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          >
+            INITIALIZING
+          </motion.p>
+        </div>
+
+        {/* Progress bar */}
+        <div className="relative h-1 w-64 overflow-hidden bg-stroke rounded-full">
+          <motion.div
+            className="absolute inset-y-0 left-0 accent-gradient"
+            style={{ width: `${count}%` }}
+          />
+        </div>
+
+        {/* Percentage */}
+        <motion.p
+          className="text-5xl font-display font-black gradient-text tracking-wider"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2 }}
+        >
+          {count}%
+        </motion.p>
+      </div>
     </motion.div>
   );
 }
@@ -128,7 +143,7 @@ function Stats() {
             viewport={{ once: true }}
           >
             <p className="font-display text-6xl font-bold gradient-text md:text-7xl">{value}</p>
-            <p className="mt-4 text-xs uppercase tracking-[0.25em] text-muted font-mono">{label}</p>
+            <p className="mt-4 text-xs uppercase tracking-[0.25em] text-muted">{label}</p>
           </motion.div>
         ))}
       </div>
@@ -155,8 +170,6 @@ export default function App() {
       >
         <Hero />
         <About />
-        <Events onNavigate={(id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })} />
-        <Records onNavigate={(id) => document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })} />
         <Gallery />
         <Stats />
         <Instagram />

@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Bebas+Neue&family=Roboto:wght@300;400;500;700;900&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Poppins:wght@300;400;500;600;700;800&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -15,9 +15,8 @@
   --brand-purple: 285 76% 52%;
   --brand-blue: 232 92% 62%;
   --brand-cyan: 192 92% 48%;
-  --font-display: "Bebas Neue", sans-serif;
-  --font-mono: "Space Mono", monospace;
-  --font-body: "Roboto", sans-serif;
+  --font-display: "Montserrat", sans-serif;
+  --font-body: "Poppins", sans-serif;
 }
 
 * {
