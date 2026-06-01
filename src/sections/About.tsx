@@ -1,124 +1,104 @@
 import { useRef } from "react";
 import { useInView, motion } from "framer-motion";
 
-const roles = ["DJ", "Producer", "Sound Architect"] as const;
-
-const stats = [
-  { value: "10+", label: "Years" },
-  { value: "500+", label: "Sets" },
-  { value: "15+", label: "Countries" },
-];
-
 export default function About() {
   const ref = useRef<HTMLDivElement>(null);
   const isInView = useInView(ref, { once: true, amount: 0.3 });
 
+  const stats = [
+    { value: "10+", label: "Years" },
+    { value: "500+", label: "Sets" },
+    { value: "15+", label: "Countries" },
+  ];
+
   return (
-    <section ref={ref} id="about" className="relative px-6 py-24 sm:py-32">
+    <section ref={ref} className="relative px-6 py-24 sm:py-32 overflow-hidden">
       <div className="mx-auto max-w-6xl">
-        <div className="grid gap-12 md:grid-cols-2 md:gap-16 md:items-center">
-          {/* Photo / visual */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+          {/* Left: Image */}
           <motion.div
-            className="relative flex justify-center"
+            className="relative"
             initial={{ opacity: 0, x: -40 }}
             animate={isInView ? { opacity: 1, x: 0 } : {}}
-            transition={{ duration: 0.7 }}
+            transition={{ duration: 0.8 }}
           >
-            <div className="gradient-ring relative h-72 w-72 sm:h-80 sm:w-80 md:h-96 md:w-96 rounded-full bg-surface overflow-hidden">
-              <img
-                src="/IMG-removebg-preview.png"
-                alt="DJ Nish"
-                className="absolute inset-0 h-full w-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = "none";
-                }}
+            <div className="relative aspect-square">
+              {/* Floating blob background */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-br from-pink/30 to-blue/30 rounded-full blur-3xl"
+                animate={{ scale: [1, 1.1, 1] }}
+                transition={{ duration: 4, repeat: Infinity }}
               />
-              <div className="absolute inset-3 rounded-full bg-gradient-to-br from-pink/20 via-purple/10 to-blue/20 halftone mix-blend-overlay pointer-events-none" />
-              {/* Fallback icon */}
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-6xl opacity-20">🎧</span>
+              
+              {/* Image container */}
+              <div className="relative z-10 w-full h-full rounded-full overflow-hidden border border-white/10 shadow-2xl">
+                <img
+                  src="/IMG-removebg-preview.png"
+                  alt="DJ Nish"
+                  className="w-full h-full object-cover"
+                />
               </div>
+
+              {/* Floating accent */}
+              <motion.div
+                className="absolute -bottom-6 -right-6 w-24 h-24 glass rounded-full flex items-center justify-center text-3xl"
+                animate={{ y: [0, -20, 0] }}
+                transition={{ duration: 3, repeat: Infinity }}
+              >
+                🎧
+              </motion.div>
             </div>
-            {/* Floating badge */}
-            <motion.div
-              className="absolute -bottom-4 right-8 rounded-2xl border border-stroke bg-surface px-5 py-3 shadow-xl"
-              initial={{ opacity: 0, y: 20 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.4 }}
-            >
-              <div className="flex items-center gap-2">
-                <span className="relative flex h-2.5 w-2.5">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                  <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                </span>
-                <span className="text-sm font-medium">Available to book</span>
-              </div>
-            </motion.div>
           </motion.div>
 
-          {/* Bio */}
-          <div>
-            <motion.h2
-              className="text-3xl font-display font-bold leading-tight sm:text-4xl lg:text-5xl"
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6 }}
-            >
-              Crafting soundscapes that move <span className="gradient-text">crowds</span>
-            </motion.h2>
+          {/* Right: Content */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={isInView ? { opacity: 1, x: 0 } : {}}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <div className="mb-8">
+              <span className="text-xs uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink to-blue font-display font-bold">
+                About Me
+              </span>
+              <h2 className="text-5xl md:text-6xl font-display font-black leading-tight mt-3 mb-6">
+                Crafting Soundscapes That Move Crowds
+              </h2>
+            </div>
 
-            <motion.div
-              className="mt-6 flex items-center gap-3"
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.15 }}
-            >
-              <span className="h-px w-12 bg-gradient-to-r from-pink to-transparent" />
-              <div className="flex gap-4">
-                {roles.map((role) => (
-                  <span key={role} className="text-muted text-sm">{role}</span>
-                ))}
-              </div>
-            </motion.div>
+            <p className="text-lg text-muted leading-relaxed mb-8">
+              With over a decade behind the decks, DJ Nish has been shaping the underground electronic music scene — from intimate warehouse parties to sunlit festival stages. Blending deep house grooves with melodic techno textures, each set is a journey through emotion, rhythm, and atmosphere.
+            </p>
 
-            <motion.p
-              className="mt-6 leading-relaxed text-muted"
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.3 }}
-            >
-              With over a decade behind the decks, DJ Nish has been shaping the underground
-              electronic music scene — from intimate warehouse parties to sunlit festival
-              stages. Blending deep house grooves with melodic techno textures, each set is
-              a journey through emotion, rhythm, and atmosphere.
-            </motion.p>
-
-            <motion.div
-              className="mt-8 flex gap-8"
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.45 }}
-            >
-              {stats.map(({ label, value }) => (
-                <div key={label}>
-                  <div className="text-2xl font-bold gradient-text">{value}</div>
-                  <div className="text-sm text-muted">{label}</div>
-                </div>
+            {/* Stats Grid */}
+            <div className="grid grid-cols-3 gap-4 mb-8">
+              {stats.map((stat, i) => (
+                <motion.div
+                  key={stat.label}
+                  className="glass-sm p-4 text-center rounded-2xl"
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={isInView ? { opacity: 1, y: 0 } : {}}
+                  transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
+                >
+                  <p className="text-3xl md:text-4xl font-display font-black gradient-text">
+                    {stat.value}
+                  </p>
+                  <p className="text-xs uppercase tracking-widest text-muted mt-2">
+                    {stat.label}
+                  </p>
+                </motion.div>
               ))}
-            </motion.div>
+            </div>
 
+            {/* CTA Button */}
             <motion.button
-              onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
-              className="mt-8 accent-gradient rounded-full px-8 py-3 text-sm font-semibold text-white transition-all hover:shadow-[0_0_24px_rgba(243,6,130,0.4)] hover:brightness-110 active:scale-95"
-              initial={{ opacity: 0, y: 24 }}
-              animate={isInView ? { opacity: 1, y: 0 } : {}}
-              transition={{ duration: 0.6, delay: 0.55 }}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="accent-gradient rounded-full px-8 py-4 text-sm font-bold uppercase tracking-wider text-white transition-all hover:shadow-[0_0_40px_rgba(243,6,130,0.6)]"
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ delay: 0.7, duration: 0.6 }}
             >
               Book a Set →
             </motion.button>
-          </div>
+          </motion.div>
         </div>
       </div>
     </section>

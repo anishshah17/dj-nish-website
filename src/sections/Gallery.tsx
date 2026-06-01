@@ -1,148 +1,97 @@
-import { useRef, useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useRef, useState } from "react";
+import { useInView, motion } from "framer-motion";
 import { galleryItems } from "../data";
 
-gsap.registerPlugin(ScrollTrigger);
-
 export default function Gallery() {
-  const sectionRef = useRef<HTMLElement | null>(null);
-  const contentRef = useRef<HTMLDivElement | null>(null);
-  const leftRef = useRef<HTMLDivElement | null>(null);
-  const rightRef = useRef<HTMLDivElement | null>(null);
-  const [selected, setSelected] = useState<(typeof galleryItems)[number] | null>(null);
-
-  useEffect(() => {
-    const section = sectionRef.current;
-    const content = contentRef.current;
-    if (!section || !content) return;
-
-    const ctx = gsap.context(() => {
-      ScrollTrigger.create({
-        trigger: section,
-        start: "top top",
-        end: "bottom bottom",
-        pin: content,
-        pinSpacing: false,
-      });
-
-      gsap.to(leftRef.current, {
-        yPercent: -18,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-
-      gsap.to(rightRef.current, {
-        yPercent: -34,
-        ease: "none",
-        scrollTrigger: {
-          trigger: section,
-          start: "top bottom",
-          end: "bottom top",
-          scrub: true,
-        },
-      });
-    }, section);
-
-    return () => ctx.revert();
-  }, []);
-
-  const left = galleryItems.slice(0, 3);
-  const right = galleryItems.slice(3);
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.2 });
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   return (
-    <section ref={sectionRef} id="gallery" className="relative min-h-[300vh] overflow-hidden bg-bg">
-      {/* Pinned center text */}
-      <div ref={contentRef} className="relative z-10 flex h-screen items-center justify-center px-6 text-center">
-        <div className="max-w-xl">
-          <div className="mb-5 flex items-center justify-center gap-3 text-xs uppercase tracking-[0.3em] text-muted">
-            <span className="h-px w-8 bg-stroke" />
+    <section ref={ref} className="relative px-6 py-24 sm:py-32 overflow-hidden">
+      <div className="mx-auto max-w-7xl">
+        {/* Header */}
+        <motion.div
+          className="mb-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.6 }}
+        >
+          <span className="text-xs uppercase tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-pink to-blue font-display font-bold">
             Gallery
-            <span className="h-px w-8 bg-stroke" />
-          </div>
-          <h2 className="mb-5 text-5xl leading-none text-text-primary md:text-7xl">
-            Behind the <span className="font-display italic gradient-text">decks</span>
+          </span>
+          <h2 className="text-5xl md:text-6xl font-display font-black leading-tight mt-3">
+            Behind the Decks
           </h2>
-          <p className="mx-auto mb-8 max-w-md text-sm leading-7 text-muted md:text-base">
+          <p className="text-muted text-lg mt-4 max-w-2xl mx-auto">
             Moments captured across stages, clubs, and festivals. Click any photo to expand.
           </p>
-          <button
-            onClick={() => document.getElementById("booking")?.scrollIntoView({ behavior: "smooth" })}
-            className="gradient-ring relative inline-flex rounded-full text-sm text-text-primary"
-          >
-            <span className="relative rounded-full bg-bg px-6 py-3">Book a Set</span>
-          </button>
-        </div>
-      </div>
+        </motion.div>
 
-      {/* Parallax photo columns */}
-      <div className="pointer-events-none absolute inset-x-0 top-0 z-20 mx-auto grid max-w-[1400px] grid-cols-2 gap-12 px-6 py-[30vh] md:gap-40 md:px-12">
-        <div ref={leftRef} className="flex flex-col items-start gap-[38vh]">
-          {left.map((item) => (
-            <button
-              type="button"
+        {/* Gallery Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {galleryItems.map((item, i) => (
+            <motion.div
               key={item.id}
-              onClick={() => setSelected(item)}
-              className={`pointer-events-auto aspect-square w-full max-w-[320px] overflow-hidden rounded-[8px] border border-white/10 bg-surface shadow-2xl shadow-black/35 transition-transform duration-300 hover:scale-105 ${item.rotation}`}
+              className="group relative aspect-square cursor-pointer overflow-hidden rounded-3xl"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={isInView ? { opacity: 1, scale: 1 } : {}}
+              transition={{ delay: i * 0.08, duration: 0.6 }}
+              onClick={() => setSelectedId(item.id)}
             >
-              <img src={item.image} alt={item.title} className="h-full w-full object-cover" loading="lazy" />
-            </button>
+              {/* Glass overlay */}
+              <div className="absolute inset-0 glass z-10 opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center justify-center">
+                <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM13 10H7" />
+                </svg>
+              </div>
+
+              {/* Image */}
+              <img
+                src={item.image}
+                alt={item.title}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+              />
+
+              {/* Gradient overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+            </motion.div>
           ))}
         </div>
-        <div ref={rightRef} className="mt-[45vh] flex flex-col items-end gap-[38vh]">
-          {right.map((item) => (
-            <button
-              type="button"
-              key={item.id}
-              onClick={() => setSelected(item)}
-              className={`pointer-events-auto aspect-square w-full max-w-[320px] overflow-hidden rounded-[8px] border border-white/10 bg-surface shadow-2xl shadow-black/35 transition-transform duration-300 hover:scale-105 ${item.rotation}`}
-            >
-              <img src={item.image} alt={item.title} className="h-full w-full object-cover" loading="lazy" />
-            </button>
-          ))}
-        </div>
-      </div>
 
-      {/* Lightbox */}
-      <AnimatePresence>
-        {selected && (
-          <motion.button
-            type="button"
-            className="fixed inset-0 z-[80] flex cursor-zoom-out items-center justify-center bg-black/85 p-6 backdrop-blur-lg"
-            onClick={() => setSelected(null)}
+        {/* Lightbox */}
+        {selectedId && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
+            onClick={() => setSelectedId(null)}
           >
             <motion.div
-              className="relative max-w-4xl w-full"
-              initial={{ scale: 0.9, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.94, opacity: 0 }}
+              className="relative max-w-4xl w-full aspect-video rounded-3xl overflow-hidden glass"
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
               onClick={(e) => e.stopPropagation()}
             >
               <img
-                src={selected.image}
-                alt={selected.title}
-                className="max-h-[82vh] w-full rounded-[8px] object-cover"
+                src={galleryItems.find((item) => item.id === selectedId)?.image}
+                alt="Expanded"
+                className="w-full h-full object-cover"
               />
-              <p className="mt-3 text-center text-sm text-muted">{selected.title}</p>
               <button
-                className="absolute -top-4 -right-4 flex h-9 w-9 items-center justify-center rounded-full bg-surface border border-stroke text-muted hover:text-text-primary transition-colors"
-                onClick={() => setSelected(null)}
+                onClick={() => setSelectedId(null)}
+                className="absolute top-4 right-4 glass rounded-full p-3 hover:bg-white/20 transition-all"
               >
-                ✕
+                <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
               </button>
             </motion.div>
-          </motion.button>
+          </motion.div>
         )}
-      </AnimatePresence>
+      </div>
     </section>
   );
 }
