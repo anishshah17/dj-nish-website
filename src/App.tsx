@@ -13,9 +13,11 @@ import Footer from "./sections/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ─── Loading screen ───────────────────────────────────────────────────────────
+// ─── Loading screen with spinning record ─────────────────────────────────────
 function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [count, setCount] = useState(0);
+  const recordRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.classList.add("loading");
@@ -30,16 +32,33 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       const nextCount = Math.round(eased * 100);
       setCount(nextCount);
 
+      // Accelerate record spin: starts slow, ends fast
+      const spinSpeed = 360 * (progress ** 1.5) * 20; // Ramps up exponentially
+      if (recordRef.current) {
+        recordRef.current.style.transform = `rotate(${spinSpeed}deg)`;
+      }
+
       if (progress < 1) {
         frame = requestAnimationFrame(tick);
         return;
       }
+
       if (!completed) {
         completed = true;
-        window.setTimeout(() => {
-          document.body.classList.remove("loading");
-          onComplete();
-        }, 400);
+
+        // Trigger zoom transition
+        if (containerRef.current) {
+          gsap.to(containerRef.current, {
+            scale: 50,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power2.in",
+            onComplete: () => {
+              document.body.classList.remove("loading");
+              onComplete();
+            },
+          });
+        }
       }
     };
 
@@ -51,6 +70,7 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
 
   return (
     <motion.div
+      ref={containerRef}
       className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-bg"
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
@@ -71,35 +91,56 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
 
       {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center gap-8">
-        {/* Animated waveform bars */}
-        <div className="flex items-end justify-center gap-2">
-          {Array.from({ length: 12 }).map((_, i) => (
-            <motion.div
-              key={i}
-              className="w-2 bg-gradient-to-t from-pink to-blue rounded-full"
-              style={{ height: "8px" }}
-              animate={{ height: [8, 48, 8] }}
-              transition={{
-                duration: 0.8,
-                delay: i * 0.06,
-                repeat: Infinity,
-                ease: "easeInOut",
-              }}
-            />
-          ))}
+        {/* Spinning vinyl record */}
+        <div className="relative w-48 h-48 mb-4">
+          {/* Outer vinyl */}
+          <div
+            ref={recordRef}
+            className="absolute inset-0 rounded-full border-8 border-gray-800 bg-gradient-to-br from-black via-gray-900 to-black shadow-2xl"
+            style={{
+              backgroundImage: `
+                radial-gradient(circle at 30% 30%, rgba(255,255,255,0.1), transparent 50%),
+                radial-gradient(circle, #000 0%, #1a1a1a 50%, #000 100%)
+              `,
+            }}
+          >
+            {/* Vinyl grooves effect */}
+            <div className="absolute inset-0 rounded-full opacity-30">
+              {Array.from({ length: 12 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="absolute rounded-full border border-gray-700"
+                  style={{
+                    inset: `${i * 8}px`,
+                  }}
+                />
+              ))}
+            </div>
+
+            {/* Center label */}
+            <div className="absolute inset-0 flex items-center justify-center">
+              <div className="w-20 h-20 rounded-full bg-gradient-to-br from-pink via-purple to-blue flex items-center justify-center shadow-lg">
+                <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
+                  <span className="text-xs font-bold text-white text-center">DJ</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Needle arm */}
+          <div className="absolute -top-2 -right-8 w-24 h-2 bg-gray-600 rounded-full origin-left transform -rotate-12 shadow-lg">
+            <div className="absolute right-0 w-3 h-3 bg-gray-400 rounded-full" />
+          </div>
         </div>
 
-        {/* Logo and text */}
-        <div className="relative flex flex-col items-center gap-4">
-          <img src="/nish-logo.png" alt="DJ Nish" className="h-24 w-auto rounded-xl bg-white p-3" />
-          <motion.p
-            className="text-sm uppercase tracking-[0.4em] text-muted font-display font-bold"
-            animate={{ opacity: [0.5, 1, 0.5] }}
-            transition={{ duration: 1.5, repeat: Infinity }}
-          >
-            INITIALIZING
-          </motion.p>
-        </div>
+        {/* Loading text */}
+        <motion.p
+          className="text-sm uppercase tracking-[0.4em] text-muted font-display font-bold"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          LOADING
+        </motion.p>
 
         {/* Progress bar */}
         <div className="relative h-1 w-64 overflow-hidden bg-stroke rounded-full">
