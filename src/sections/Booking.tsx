@@ -7,6 +7,57 @@ export default function Booking() {
   const isInView = useInView(ref, { once: true, amount: 0.2 });
   const [step, setStep] = useState(0);
   const [selectedPackage, setSelectedPackage] = useState<string | null>(null);
+  const [selectedDate, setSelectedDate] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    // Simulate submission
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+    setIsSubmitting(false);
+    setSubmitted(true);
+  };
+
+  if (submitted) {
+    return (
+      <section ref={ref} className="relative px-6 py-24 sm:py-32 overflow-hidden min-h-screen flex items-center justify-center">
+        <motion.div
+          className="text-center max-w-2xl"
+          initial={{ scale: 0.8, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          transition={{ duration: 0.6 }}
+        >
+          <motion.div
+            className="w-20 h-20 mx-auto mb-6 rounded-full bg-gradient-to-br from-pink to-blue flex items-center justify-center"
+            animate={{ rotate: 360 }}
+            transition={{ duration: 2, repeat: Infinity }}
+          >
+            <svg className="w-10 h-10 text-white" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z" />
+            </svg>
+          </motion.div>
+          <h2 className="text-5xl md:text-6xl font-display font-black mb-4">
+            Let's Make It Unforgettable
+          </h2>
+          <p className="text-muted text-xl mb-8">
+            Your booking inquiry has been received. I'll be in touch within 24 hours to confirm details and discuss your vision.
+          </p>
+          <motion.button
+            onClick={() => {
+              setSubmitted(false);
+              setStep(0);
+              setSelectedPackage(null);
+            }}
+            className="accent-gradient rounded-full px-8 py-4 text-sm font-bold uppercase tracking-wider text-white"
+            whileHover={{ scale: 1.05 }}
+          >
+            Book Another Event
+          </motion.button>
+        </motion.div>
+      </section>
+    );
+  }
 
   return (
     <section ref={ref} className="relative px-6 py-24 sm:py-32 overflow-hidden">
@@ -62,7 +113,7 @@ export default function Booking() {
                       : "hover:bg-white/5"
                   }`}
                   onClick={() => setSelectedPackage(pkg.id)}
-                  whileHover={{ scale: 1.02 }}
+                  whileHover={{ scale: 1.02, y: -5 }}
                 >
                   {pkg.popular && (
                     <div className="inline-block accent-gradient rounded-full px-4 py-1 text-xs font-bold text-white mb-4">
@@ -104,7 +155,7 @@ export default function Booking() {
           </motion.div>
         )}
 
-        {/* Step 2-4: Form (simplified) */}
+        {/* Step 2-4: Form */}
         {step > 0 && (
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -115,24 +166,30 @@ export default function Booking() {
           >
             <h3 className="text-2xl font-display font-bold mb-6">
               {step === 1 && "Event Details"}
-              {step === 2 && "Deposit Information"}
-              {step === 3 && "Confirm Booking"}
+              {step === 2 && "Availability & Deposit"}
+              {step === 3 && "Confirm Your Booking"}
             </h3>
 
             {step === 1 && (
               <div className="space-y-4 mb-8">
                 <input
                   type="text"
-                  placeholder="Event Name"
+                  placeholder="Your Name"
                   className="w-full glass-sm px-6 py-3 rounded-2xl text-white placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-pink"
                 />
                 <input
-                  type="date"
-                  className="w-full glass-sm px-6 py-3 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-pink"
+                  type="email"
+                  placeholder="Email Address"
+                  className="w-full glass-sm px-6 py-3 rounded-2xl text-white placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-pink"
+                />
+                <input
+                  type="tel"
+                  placeholder="Phone Number"
+                  className="w-full glass-sm px-6 py-3 rounded-2xl text-white placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-pink"
                 />
                 <input
                   type="text"
-                  placeholder="Location"
+                  placeholder="Event Location"
                   className="w-full glass-sm px-6 py-3 rounded-2xl text-white placeholder-muted/50 focus:outline-none focus:ring-2 focus:ring-pink"
                 />
               </div>
@@ -140,36 +197,63 @@ export default function Booking() {
 
             {step === 2 && (
               <div className="space-y-4 mb-8">
+                <div>
+                  <label className="block text-sm font-bold mb-2">Event Date</label>
+                  <input
+                    type="date"
+                    value={selectedDate}
+                    onChange={(e) => setSelectedDate(e.target.value)}
+                    className="w-full glass-sm px-6 py-3 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-pink"
+                  />
+                </div>
                 <div className="glass-sm p-6 rounded-2xl">
-                  <p className="text-sm text-muted mb-2">Deposit Amount</p>
+                  <p className="text-sm text-muted mb-2">Deposit Amount Due</p>
                   <p className="text-4xl font-black gradient-text">
                     ${bookingPackages.find((p) => p.id === selectedPackage)?.deposit}
                   </p>
                 </div>
-                <select className="w-full glass-sm px-6 py-3 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-pink">
-                  <option>Credit Card</option>
-                  <option>Bank Transfer</option>
-                  <option>PayPal</option>
-                </select>
+                <div>
+                  <label className="block text-sm font-bold mb-2">Payment Method</label>
+                  <select className="w-full glass-sm px-6 py-3 rounded-2xl text-white focus:outline-none focus:ring-2 focus:ring-pink">
+                    <option>Credit Card</option>
+                    <option>Bank Transfer</option>
+                    <option>PayPal</option>
+                  </select>
+                </div>
               </div>
             )}
 
             {step === 3 && (
               <div className="glass-sm p-6 rounded-2xl mb-8">
                 <p className="text-sm text-muted mb-4">Booking Summary</p>
-                <div className="space-y-2 text-sm">
-                  <p>
-                    <span className="text-muted">Package:</span>{" "}
+                <div className="space-y-3 text-sm">
+                  <div className="flex justify-between">
+                    <span className="text-muted">Package:</span>
                     <span className="font-bold">
                       {bookingPackages.find((p) => p.id === selectedPackage)?.name}
                     </span>
-                  </p>
-                  <p>
-                    <span className="text-muted">Total:</span>{" "}
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted">Total Price:</span>
                     <span className="font-bold gradient-text text-lg">
                       ${bookingPackages.find((p) => p.id === selectedPackage)?.price}
                     </span>
-                  </p>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-muted">Deposit Due:</span>
+                    <span className="font-bold text-pink">
+                      ${bookingPackages.find((p) => p.id === selectedPackage)?.deposit}
+                    </span>
+                  </div>
+                  <div className="border-t border-white/10 pt-3 mt-3 flex justify-between">
+                    <span className="text-muted">Balance Due on Event Day:</span>
+                    <span className="font-bold">
+                      ${
+                        (bookingPackages.find((p) => p.id === selectedPackage)?.price || 0) -
+                        (bookingPackages.find((p) => p.id === selectedPackage)?.deposit || 0)
+                      }
+                    </span>
+                  </div>
                 </div>
               </div>
             )}
@@ -182,10 +266,25 @@ export default function Booking() {
                 ← Back
               </button>
               <button
-                onClick={() => setStep(Math.min(3, step + 1))}
-                className="accent-gradient rounded-full px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition-all hover:shadow-[0_0_40px_rgba(243,6,130,0.6)]"
+                onClick={() => {
+                  if (step === 3) {
+                    handleSubmit();
+                  } else {
+                    setStep(Math.min(3, step + 1));
+                  }
+                }}
+                disabled={isSubmitting}
+                className="accent-gradient rounded-full px-8 py-3 text-sm font-bold uppercase tracking-wider text-white transition-all hover:shadow-[0_0_40px_rgba(243,6,130,0.6)] disabled:opacity-50"
               >
-                {step === 3 ? "Complete Booking" : "Continue →"}
+                {isSubmitting ? (
+                  <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity }}>
+                    ⏳
+                  </motion.span>
+                ) : step === 3 ? (
+                  "Complete Booking"
+                ) : (
+                  "Continue →"
+                )}
               </button>
             </div>
           </motion.div>

@@ -6,14 +6,16 @@ import { useEffect, useRef, useState } from "react";
 import Navbar from "./sections/Navbar";
 import Hero from "./sections/Hero";
 import About from "./sections/About";
+import SignatureSound from "./sections/SignatureSound";
+import EventTypes from "./sections/EventTypes";
 import Gallery from "./sections/Gallery";
-import Instagram from "./sections/Instagram";
+import Testimonials from "./sections/Testimonials";
 import Booking from "./sections/Booking";
 import Footer from "./sections/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
-// ─── Loading screen with spinning record ─────────────────────────────────────
+// Loading screen with spinning record
 function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [count, setCount] = useState(0);
   const recordRef = useRef<HTMLDivElement>(null);
@@ -32,8 +34,7 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       const nextCount = Math.round(eased * 100);
       setCount(nextCount);
 
-      // Accelerate record spin: starts slow, ends fast
-      const spinSpeed = 360 * (progress ** 1.5) * 20; // Ramps up exponentially
+      const spinSpeed = 360 * (progress ** 1.5) * 20;
       if (recordRef.current) {
         recordRef.current.style.transform = `rotate(${spinSpeed}deg)`;
       }
@@ -46,7 +47,6 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       if (!completed) {
         completed = true;
 
-        // Trigger zoom transition
         if (containerRef.current) {
           gsap.to(containerRef.current, {
             scale: 50,
@@ -75,7 +75,6 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
       exit={{ opacity: 0 }}
       transition={{ duration: 0.5 }}
     >
-      {/* Full-screen animated background */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
           className="absolute -top-40 -left-40 w-96 h-96 bg-pink/30 rounded-full blur-3xl"
@@ -89,11 +88,8 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
         />
       </div>
 
-      {/* Content */}
       <div className="relative z-10 flex flex-col items-center justify-center gap-8">
-        {/* Spinning vinyl record */}
         <div className="relative w-48 h-48 mb-4">
-          {/* Outer vinyl */}
           <div
             ref={recordRef}
             className="absolute inset-0 rounded-full border-8 border-gray-800 bg-gradient-to-br from-black via-gray-900 to-black shadow-2xl"
@@ -104,7 +100,6 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
               `,
             }}
           >
-            {/* Vinyl grooves effect */}
             <div className="absolute inset-0 rounded-full opacity-30">
               {Array.from({ length: 12 }).map((_, i) => (
                 <div
@@ -117,7 +112,6 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
               ))}
             </div>
 
-            {/* Center label */}
             <div className="absolute inset-0 flex items-center justify-center">
               <div className="w-20 h-20 rounded-full bg-gradient-to-br from-pink via-purple to-blue flex items-center justify-center shadow-lg">
                 <div className="w-12 h-12 rounded-full bg-black flex items-center justify-center">
@@ -127,13 +121,11 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
             </div>
           </div>
 
-          {/* Needle arm */}
           <div className="absolute -top-2 -right-8 w-24 h-2 bg-gray-600 rounded-full origin-left transform -rotate-12 shadow-lg">
             <div className="absolute right-0 w-3 h-3 bg-gray-400 rounded-full" />
           </div>
         </div>
 
-        {/* Loading text */}
         <motion.p
           className="text-sm uppercase tracking-[0.4em] text-muted font-display font-bold"
           animate={{ opacity: [0.5, 1, 0.5] }}
@@ -142,7 +134,6 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
           LOADING
         </motion.p>
 
-        {/* Progress bar */}
         <div className="relative h-1 w-64 overflow-hidden bg-stroke rounded-full">
           <motion.div
             className="absolute inset-y-0 left-0 accent-gradient"
@@ -150,7 +141,6 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
           />
         </div>
 
-        {/* Percentage */}
         <motion.p
           className="text-5xl font-display font-black gradient-text tracking-wider"
           initial={{ opacity: 0 }}
@@ -164,35 +154,6 @@ function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   );
 }
 
-// ─── Stats strip ─────────────────────────────────────────────────────────────
-function Stats() {
-  const stats = [
-    ["10+", "Years Experience"],
-    ["500+", "Sets Performed"],
-    ["100%", "Satisfied Clients"],
-  ];
-  return (
-    <section id="stats" className="bg-bg py-16 md:py-24">
-      <div className="mx-auto grid max-w-[1200px] grid-cols-1 gap-px overflow-hidden rounded-[8px] border border-stroke bg-stroke px-0 md:grid-cols-3">
-        {stats.map(([value, label]) => (
-          <motion.div
-            key={label}
-            className="bg-bg p-8 text-center md:p-12"
-            initial={{ opacity: 0, y: 24 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.75 }}
-            viewport={{ once: true }}
-          >
-            <p className="font-display text-6xl font-bold gradient-text md:text-7xl">{value}</p>
-            <p className="mt-4 text-xs uppercase tracking-[0.25em] text-muted">{label}</p>
-          </motion.div>
-        ))}
-      </div>
-    </section>
-  );
-}
-
-// ─── App ─────────────────────────────────────────────────────────────────────
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
 
@@ -211,9 +172,10 @@ export default function App() {
       >
         <Hero />
         <About />
+        <SignatureSound />
+        <EventTypes />
         <Gallery />
-        <Stats />
-        <Instagram />
+        <Testimonials />
         <Booking />
         <Footer />
       </motion.main>
