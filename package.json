@@ -9,7 +9,6 @@
     "preview": "vite preview --host 0.0.0.0"
   },
   "dependencies": {
-    "@emailjs/browser": "^4.4.1",
     "@react-three/fiber": "^9.6.1",
     "@shadergradient/react": "^2.4.20",
     "@vitejs/plugin-react": "^5.0.0",
