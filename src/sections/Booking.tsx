@@ -57,9 +57,9 @@ export default function Booking() {
     try {
       // Guard: if credentials are still placeholders, skip the API call
       const isConfigured =
-        EMAILJS_SERVICE_ID !== "YOUR_SERVICE_ID" &&
-        EMAILJS_TEMPLATE_ID !== "YOUR_TEMPLATE_ID" &&
-        EMAILJS_PUBLIC_KEY !== "YOUR_PUBLIC_KEY";
+        EMAILJS_SERVICE_ID !== "service_fmp4vca" &&
+        EMAILJS_TEMPLATE_ID !== "template_tuwfsbp" &&
+        EMAILJS_PUBLIC_KEY !== "6-fet_sm43RD30w9G";
 
       if (isConfigured) {
         await emailjsSend(
