@@ -99,19 +99,19 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
       <div ref={shaderRef} className="absolute inset-0" style={{ opacity: 0 }}>
         <ShaderGradientCanvas
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-          pixelDensity={1}
+          pixelDensity={1.5}
           fov={40}
         >
           <ShaderGradient
             animate="on"
-            brightness={1.2}
+            brightness={1.8}
             cAzimuthAngle={180}
             cDistance={4.79}
             cPolarAngle={115}
             cameraZoom={1}
-            color1="#ee00d6"
-            color2="#6bedfe"
-            color3="#863ee4"
+            color1="#ff00e5"
+            color2="#00e5ff"
+            color3="#9b30ff"
             envPreset="city"
             grain="off"
             lightType="3d"
@@ -121,17 +121,17 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
             range="disabled"
             rangeEnd={40}
             rangeStart={0}
-            reflection={0.1}
+            reflection={0.4}
             rotationX={0}
             rotationY={0}
             rotationZ={235}
             shader="defaults"
             type="waterPlane"
             uAmplitude={0}
-            uDensity={1.2}
+            uDensity={1.5}
             uFrequency={5.5}
-            uSpeed={0.1}
-            uStrength={3.3}
+            uSpeed={0.35}
+            uStrength={5.5}
             uTime={0.2}
             wireframe={false}
           />
@@ -145,9 +145,9 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
         style={{
           width: 360,
           height: 360,
-          background:
-            "radial-gradient(ellipse at center, rgba(238,0,214,0.5) 0%, rgba(134,62,228,0.3) 40%, transparent 70%)",
-          filter: "blur(40px)",
+            background:
+            "radial-gradient(ellipse at center, rgba(255,0,229,0.75) 0%, rgba(155,48,255,0.5) 40%, transparent 70%)",
+          filter: "blur(48px)",
           opacity: 0,
         }}
       />
@@ -164,7 +164,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
           className="w-60 md:w-80"
           style={{
             filter:
-              "drop-shadow(0 0 48px rgba(238,0,214,0.7)) drop-shadow(0 0 96px rgba(107,237,254,0.35))",
+              "drop-shadow(0 0 60px rgba(255,0,229,1)) drop-shadow(0 0 120px rgba(0,229,255,0.6)) brightness(1.15)",
           }}
         />
       </div>

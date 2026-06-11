@@ -21,6 +21,7 @@ const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
 type FormState = {
   name: string;
   email: string;
+  phone: string;
   date: string;
   venue: string;
   vibe: string;
@@ -30,6 +31,7 @@ type FormState = {
 const empty: FormState = {
   name: "",
   email: "",
+  phone: "",
   date: "",
   venue: "",
   vibe: "",
@@ -59,6 +61,7 @@ export default function Booking() {
         {
           from_name: form.name,
           from_email: form.email,
+          from_phone: form.phone,
           event_date: form.date,
           venue: form.venue,
           vibe: form.vibe,
@@ -205,6 +208,21 @@ export default function Booking() {
                   value={form.email}
                   onChange={(e) => update("email", e.target.value)}
                   placeholder="your@email.com"
+                  className={inputClass}
+                  style={inputStyle}
+                  onFocus={(e) => Object.assign(e.currentTarget.style, inputFocusStyle)}
+                  onBlur={(e) => Object.assign(e.currentTarget.style, inputStyle)}
+                />
+              </div>
+
+              {/* Phone */}
+              <div className="flex flex-col gap-1.5">
+                <label className="text-[10px] uppercase tracking-[0.2em] text-white/30">Phone</label>
+                <input
+                  type="tel"
+                  value={form.phone}
+                  onChange={(e) => update("phone", e.target.value)}
+                  placeholder="+1 (312) 000-0000"
                   className={inputClass}
                   style={inputStyle}
                   onFocus={(e) => Object.assign(e.currentTarget.style, inputFocusStyle)}

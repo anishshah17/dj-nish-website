@@ -49,8 +49,6 @@ export const navItems = [
 // ─── Socials ─────────────────────────────────────────────────────────────────
 export const socials = [
   { platform: "Instagram", url: "https://instagram.com/djnish.chi" },
-  { platform: "SoundCloud", url: "https://soundcloud.com" },
-  { platform: "Mixcloud", url: "https://mixcloud.com" },
 ];
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
