@@ -46,14 +46,14 @@ export default function ShaderHeroPage() {
         >
           <ShaderGradient
             animate="on"
-            brightness={0.9}          // dimmer — was 1.2
+            brightness={1.6}          // brighter landing page
             cAzimuthAngle={180}
             cDistance={3.43}
             cPolarAngle={90}
             cameraZoom={1}
-            color1="#c4006b"          // softer pink — was #ff0090
-            color2="#1a2580"          // muted blue — was #2332db
-            color3="#7a3db5"          // muted purple — was #ac58e1
+            color1="#ff0090"          // vivid pink
+            color2="#2332db"          // vivid blue
+            color3="#ac58e1"          // vivid purple
             envPreset="city"
             grain="on"               // grain on for texture/calm
             lightType="env"
@@ -63,17 +63,17 @@ export default function ShaderHeroPage() {
             range="disabled"
             rangeEnd={40}
             rangeStart={0}
-            reflection={0.1}
+            reflection={0.3}
             rotationX={0}
             rotationY={10}
             rotationZ={50}
             shader="defaults"
             type="waterPlane"
-            uAmplitude={0.5}         // reduced from 1
-            uDensity={1.1}           // reduced from 1.3
-            uFrequency={4.0}         // reduced from 5.5
-            uSpeed={0.15}            // much slower — was 0.5
-            uStrength={2.2}          // much calmer — was 5.3
+            uAmplitude={0.8}
+            uDensity={1.3}
+            uFrequency={4.5}
+            uSpeed={0.2}
+            uStrength={3.5}
             uTime={0}
             wireframe={false}
           />
@@ -85,7 +85,7 @@ export default function ShaderHeroPage() {
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.42) 0%, rgba(0,0,0,0.28) 45%, rgba(0,0,0,0.65) 100%)",
+            "linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.12) 45%, rgba(0,0,0,0.55) 100%)",
         }}
       />
 

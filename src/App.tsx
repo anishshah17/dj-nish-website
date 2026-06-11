@@ -104,7 +104,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
         >
           <ShaderGradient
             animate="on"
-            brightness={1.8}
+            brightness={1.5}
             cAzimuthAngle={180}
             cDistance={4.79}
             cPolarAngle={115}
