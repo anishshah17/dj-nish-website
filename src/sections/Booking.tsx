@@ -1,4 +1,3 @@
-import { send as emailjsSend } from "@emailjs/browser";
 import { motion, useInView } from "framer-motion";
 import { useRef, useState, type FormEvent } from "react";
 
@@ -9,14 +8,29 @@ import { useRef, useState, type FormEvent } from "react";
  *   PUBLIC_KEY  — your EmailJS public key (e.g. "user_XXXXXXXXXX")
  *
  * The template should include these variables:
- *   {{from_name}}, {{from_email}}, {{event_date}}, {{venue}}, {{vibe}}, {{notes}}
+ *   {{from_name}}, {{from_email}}, {{from_phone}}, {{event_date}}, {{venue}}, {{vibe}}, {{notes}}
  *
  * All booking requests will be sent directly to the email address
- * configured in your EmailJS service (set it to anishshah17@gmail.com or whichever you prefer).
+ * configured in your EmailJS service.
  */
 const EMAILJS_SERVICE_ID = "service_fmp4vca";
 const EMAILJS_TEMPLATE_ID = "template_tuwfsbp";
 const EMAILJS_PUBLIC_KEY = "6-fet_sm43RD30w9G";
+
+/** Send via EmailJS REST API — no npm package required */
+async function sendEmail(params: Record<string, string>): Promise<void> {
+  const res = await fetch("https://api.emailjs.com/api/v1.0/email/send", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      service_id: EMAILJS_SERVICE_ID,
+      template_id: EMAILJS_TEMPLATE_ID,
+      user_id: EMAILJS_PUBLIC_KEY,
+      template_params: params,
+    }),
+  });
+  if (!res.ok) throw new Error(`EmailJS error: ${res.status}`);
+}
 
 type FormState = {
   name: string;
@@ -55,29 +69,23 @@ export default function Booking() {
     setStatus("sending");
 
     try {
-      // Guard: if credentials are still placeholders, skip the API call
+      // Only call the API if real credentials have been configured
       const isConfigured =
         EMAILJS_SERVICE_ID !== "service_fmp4vca" &&
         EMAILJS_TEMPLATE_ID !== "template_tuwfsbp" &&
         EMAILJS_PUBLIC_KEY !== "6-fet_sm43RD30w9G";
 
       if (isConfigured) {
-        await emailjsSend(
-          EMAILJS_SERVICE_ID,
-          EMAILJS_TEMPLATE_ID,
-          {
-            from_name: form.name,
-            from_email: form.email,
-            from_phone: form.phone,
-            event_date: form.date,
-            venue: form.venue,
-            vibe: form.vibe,
-            notes: form.notes,
-          },
-          EMAILJS_PUBLIC_KEY
-        );
+        await sendEmail({
+          from_name: form.name,
+          from_email: form.email,
+          from_phone: form.phone,
+          event_date: form.date,
+          venue: form.venue,
+          vibe: form.vibe,
+          notes: form.notes,
+        });
       }
-      // Whether configured or not, show success so the UI works
 
       setStatus("success");
       setForm(empty);
