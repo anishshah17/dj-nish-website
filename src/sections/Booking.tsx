@@ -14,9 +14,9 @@ import { useRef, useState, type FormEvent } from "react";
  * All booking requests will be sent directly to the email address
  * configured in your EmailJS service (set it to anishshah17@gmail.com or whichever you prefer).
  */
-const EMAILJS_SERVICE_ID = "YOUR_SERVICE_ID";
-const EMAILJS_TEMPLATE_ID = "YOUR_TEMPLATE_ID";
-const EMAILJS_PUBLIC_KEY = "YOUR_PUBLIC_KEY";
+const EMAILJS_SERVICE_ID = "service_fmp4vca";
+const EMAILJS_TEMPLATE_ID = "template_tuwfsbp";
+const EMAILJS_PUBLIC_KEY = "6-fet_sm43RD30w9G";
 
 type FormState = {
   name: string;
