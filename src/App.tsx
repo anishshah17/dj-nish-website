@@ -268,6 +268,7 @@ export default function App() {
         initial={{ opacity: 0 }}
         animate={{ opacity: isLoading ? 0 : 1 }}
         transition={{ duration: 0.8, ease: "easeOut" }}
+        style={{ pointerEvents: isLoading ? "none" : "auto", visibility: isLoading ? "hidden" : "visible" }}
       >
         <Navbar />
         <main>
