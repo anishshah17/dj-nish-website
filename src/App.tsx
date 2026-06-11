@@ -6,7 +6,6 @@ import Lenis from "lenis";
 import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 
 import Navbar from "./sections/Navbar";
-import Hero from "./sections/Hero";
 import ShaderHeroPage from "./sections/ShaderHeroPage";
 import About from "./sections/About";
 import Gallery from "./sections/Gallery";
@@ -24,6 +23,57 @@ function useLenis() {
     requestAnimationFrame(raf);
     return () => lenis.destroy();
   }, []);
+}
+
+// ─── Global Shader Background ─────────────────────────────────────────────────
+// Renders once, fixed behind all sections at z-index -1
+function GlobalShaderBackground() {
+  return (
+    <div
+      className="fixed inset-0 pointer-events-none"
+      style={{ zIndex: -1 }}
+    >
+      <ShaderGradientCanvas
+        style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+        pixelDensity={1}
+        fov={45}
+      >
+        <ShaderGradient
+          animate="on"
+          brightness={1.6}
+          cAzimuthAngle={180}
+          cDistance={3.43}
+          cPolarAngle={90}
+          cameraZoom={1}
+          color1="#ff0090"
+          color2="#2332db"
+          color3="#ac58e1"
+          envPreset="city"
+          grain="on"
+          lightType="env"
+          positionX={-1.4}
+          positionY={0}
+          positionZ={0}
+          range="disabled"
+          rangeEnd={40}
+          rangeStart={0}
+          reflection={0.3}
+          rotationX={0}
+          rotationY={10}
+          rotationZ={50}
+          shader="defaults"
+          type="waterPlane"
+          uAmplitude={0.8}
+          uDensity={1.3}
+          uFrequency={4.5}
+          uSpeed={0.2}
+          uStrength={3.5}
+          uTime={0}
+          wireframe={false}
+        />
+      </ShaderGradientCanvas>
+    </div>
+  );
 }
 
 // ─── Cinematic Shader Intro ───────────────────────────────────────────────────
@@ -44,40 +94,29 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
       },
     });
 
-    // Set initial states
     tl.set(shaderRef.current, { opacity: 0 })
       .set(logoRef.current, { opacity: 0, scale: 0.8, y: 16 })
       .set(glowRef.current, { opacity: 0, scale: 0.6 })
       .set(taglineRef.current, { opacity: 0, y: 8 });
 
-    // Phase 1 (0–1.8s): Shader fades in
+    // Phase 1: Shader fades in
     tl.to(shaderRef.current, { opacity: 1, duration: 1.8, ease: "power2.inOut" }, 0);
 
-    // Phase 2 (1.4–2.8s): Logo + glow materialise from the gradient
+    // Phase 2: Logo + glow materialise
     tl.to(glowRef.current, { opacity: 1, scale: 1.3, duration: 1.4, ease: "power3.out" }, 1.4)
       .to(logoRef.current, { opacity: 1, scale: 1, y: 0, duration: 1.2, ease: "power3.out" }, 1.5);
 
-    // Phase 3 (3.0s): Tagline fades in
+    // Phase 3: Tagline fades in
     tl.to(taglineRef.current, { opacity: 1, y: 0, duration: 0.9, ease: "power2.out" }, 3.0);
 
-    // Glow breathe (runs in parallel)
+    // Glow breathe
     gsap.to(glowRef.current, {
-      scale: 1.7,
-      opacity: 0.5,
-      duration: 1.8,
-      repeat: 3,
-      yoyo: true,
-      ease: "sine.inOut",
-      delay: 1.4,
+      scale: 1.7, opacity: 0.5, duration: 1.8,
+      repeat: 3, yoyo: true, ease: "sine.inOut", delay: 1.4,
     });
 
-    // Phase 4 (4.8s): Logo blasts forward, everything fades to black
-    tl.to(logoRef.current, {
-      scale: 7,
-      opacity: 0,
-      duration: 0.85,
-      ease: "power3.in",
-    }, 4.8)
+    // Phase 4: Logo blasts forward, everything fades to black
+    tl.to(logoRef.current, { scale: 7, opacity: 0, duration: 0.85, ease: "power3.in" }, 4.8)
       .to(taglineRef.current, { opacity: 0, duration: 0.35 }, 4.8)
       .to(glowRef.current, { opacity: 0, duration: 0.35 }, 4.8)
       .to(shaderRef.current, { opacity: 0, duration: 0.6, ease: "power2.inOut" }, 5.1)
@@ -95,7 +134,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
       className="fixed inset-0 z-[200] flex flex-col items-center justify-center"
       style={{ background: "#000" }}
     >
-      {/* ── ShaderGradient2: waterPlane — fluid, liquid energy ── */}
+      {/* Intro uses its own shader instance (more vivid/fast for impact) */}
       <div ref={shaderRef} className="absolute inset-0" style={{ opacity: 0 }}>
         <ShaderGradientCanvas
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
@@ -138,51 +177,40 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
         </ShaderGradientCanvas>
       </div>
 
-      {/* ── Glow halo behind logo ── */}
+      {/* Glow halo */}
       <div
         ref={glowRef}
         className="absolute z-10 rounded-full pointer-events-none"
         style={{
-          width: 360,
-          height: 360,
-            background:
-            "radial-gradient(ellipse at center, rgba(255,0,229,0.75) 0%, rgba(155,48,255,0.5) 40%, transparent 70%)",
+          width: 360, height: 360,
+          background: "radial-gradient(ellipse at center, rgba(255,0,229,0.75) 0%, rgba(155,48,255,0.5) 40%, transparent 70%)",
           filter: "blur(48px)",
           opacity: 0,
         }}
       />
 
-      {/* ── Logo ── */}
-      <div
-        ref={logoRef}
-        className="relative z-20 flex flex-col items-center"
-        style={{ opacity: 0 }}
-      >
+      {/* Logo */}
+      <div ref={logoRef} className="relative z-20 flex flex-col items-center" style={{ opacity: 0 }}>
         <img
           src="/nish-logo.png"
           alt="DJ Nish"
           className="w-60 md:w-80"
           style={{
-            filter:
-              "drop-shadow(0 0 60px rgba(255,0,229,1)) drop-shadow(0 0 120px rgba(0,229,255,0.6)) brightness(1.15)",
+            filter: "drop-shadow(0 0 60px rgba(255,0,229,1)) drop-shadow(0 0 120px rgba(0,229,255,0.6)) brightness(1.15)",
           }}
         />
       </div>
 
-      {/* ── Tagline ── */}
+      {/* Tagline */}
       <p
         ref={taglineRef}
         className="absolute z-20 bottom-20 text-[11px] tracking-[0.45em] uppercase font-light"
-        style={{
-          color: "rgba(255,255,255,0.6)",
-          opacity: 0,
-          fontFamily: "'Montserrat', sans-serif",
-        }}
+        style={{ color: "rgba(255,255,255,0.6)", opacity: 0, fontFamily: "'Montserrat', sans-serif" }}
       >
         DJ · Producer · Chicago
       </p>
 
-      {/* ── Progress line ── */}
+      {/* Progress line */}
       <motion.div
         className="absolute bottom-0 left-0 h-[2px]"
         style={{
@@ -204,6 +232,9 @@ export default function App() {
 
   return (
     <>
+      {/* ── Global shader: fixed behind every section ── */}
+      <GlobalShaderBackground />
+
       <AnimatePresence>
         {isLoading && (
           <ShaderIntro key="intro" onComplete={() => setIsLoading(false)} />

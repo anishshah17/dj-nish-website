@@ -103,7 +103,7 @@ export default function Booking() {
       ref={sectionRef}
       id="booking"
       className="relative overflow-hidden px-6 py-24 sm:py-32"
-      style={{ background: "#050505" }}
+      style={{ background: "rgba(0,0,0,0.55)" }}
     >
       {/* Subtle gradient blob */}
       <div

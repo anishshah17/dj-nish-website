@@ -38,7 +38,7 @@ export default function About() {
       ref={ref}
       id="about"
       className="relative overflow-hidden px-6 py-24 sm:py-32"
-      style={{ background: "#050505" }}
+      style={{ background: "rgba(0,0,0,0.55)" }}
     >
       {/* Ambient glow */}
       <div
