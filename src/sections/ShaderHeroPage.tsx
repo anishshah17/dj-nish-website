@@ -1,11 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
-import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 
 /**
- * ShaderHeroPage
- * Full-screen minimal landing page with a calmed ShaderGradientPage gradient.
- * Gradient: waterPlane · hot pink / deep blue / purple — slowed down, softened.
+ * ShaderHeroPage — full-screen landing page.
+ * The shader gradient is now rendered globally in App.tsx (fixed behind all sections).
+ * This component only adds the dark overlay + content on top.
  */
 export default function ShaderHeroPage() {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -37,59 +36,16 @@ export default function ShaderHeroPage() {
       id="home"
       className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden"
     >
-      {/* ── Full-screen shader gradient — calmed down ── */}
-      <div className="absolute inset-0">
-        <ShaderGradientCanvas
-          style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
-          pixelDensity={1}
-          fov={45}
-        >
-          <ShaderGradient
-            animate="on"
-            brightness={1.6}          // brighter landing page
-            cAzimuthAngle={180}
-            cDistance={3.43}
-            cPolarAngle={90}
-            cameraZoom={1}
-            color1="#ff0090"          // vivid pink
-            color2="#2332db"          // vivid blue
-            color3="#ac58e1"          // vivid purple
-            envPreset="city"
-            grain="on"               // grain on for texture/calm
-            lightType="env"
-            positionX={-1.4}
-            positionY={0}
-            positionZ={0}
-            range="disabled"
-            rangeEnd={40}
-            rangeStart={0}
-            reflection={0.3}
-            rotationX={0}
-            rotationY={10}
-            rotationZ={50}
-            shader="defaults"
-            type="waterPlane"
-            uAmplitude={0.8}
-            uDensity={1.3}
-            uFrequency={4.5}
-            uSpeed={0.2}
-            uStrength={3.5}
-            uTime={0}
-            wireframe={false}
-          />
-        </ShaderGradientCanvas>
-      </div>
-
-      {/* ── Dark overlay — heavier to keep it moody and legible ── */}
+      {/* Dark overlay — keeps text readable over the global shader */}
       <div
         className="absolute inset-0 pointer-events-none"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(0,0,0,0.22) 0%, rgba(0,0,0,0.12) 45%, rgba(0,0,0,0.55) 100%)",
+            "linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.08) 45%, rgba(0,0,0,0.52) 100%)",
         }}
       />
 
-      {/* ── Noise texture for depth ── */}
+      {/* Noise texture for depth */}
       <div
         className="absolute inset-0 pointer-events-none opacity-[0.035]"
         style={{
@@ -98,114 +54,126 @@ export default function ShaderHeroPage() {
         }}
       />
 
-      {/* ── Content ── */}
+      {/* Content */}
       <div className="relative z-10 flex flex-col items-center text-center px-6 gap-8 w-full max-w-4xl mx-auto">
 
-        {/* Logo — centrepiece with mouse parallax */}
+        {/* Logo with mouse parallax */}
         {mounted && (
-          <motion.div
-            style={{ x: logoX, y: logoY }}
-            initial={{ opacity: 0, scale: 0.92, y: 24 }}
-            animate={{ opacity: 1, scale: 1, y: 0 }}
-            transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1], delay: 0.1 }}
-          >
-            <motion.img
+          <motion.div style={{ x: logoX, y: logoY }} className="relative">
+            {/* Rotating conic glow ring */}
+            <motion.div
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                background:
+                  "conic-gradient(from 0deg, rgba(255,0,144,0.35), rgba(35,50,219,0.35), rgba(172,88,225,0.35), rgba(255,0,144,0.35))",
+                filter: "blur(32px)",
+                transform: "scale(1.55)",
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+            />
+            <img
               src="/nish-logo.png"
               alt="DJ Nish"
-              className="w-64 md:w-80 lg:w-[400px]"
+              className="relative w-52 md:w-72 lg:w-80 drop-shadow-2xl"
               style={{
                 filter:
-                  "drop-shadow(0 4px 40px rgba(0,0,0,0.7)) drop-shadow(0 0 80px rgba(196,0,107,0.18))",
+                  "drop-shadow(0 0 40px rgba(255,0,144,0.8)) drop-shadow(0 0 80px rgba(172,88,225,0.4)) brightness(1.1)",
               }}
-              animate={{ y: [0, -9, 0] }}
-              transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
             />
           </motion.div>
         )}
 
-        {/* CTA buttons */}
-        {mounted && (
-          <motion.div
-            className="flex flex-col sm:flex-row gap-3"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.45 }}
-          >
-            {/* Primary — dark glass */}
-            <motion.a
-              href="#booking"
-              className="inline-flex items-center justify-center rounded-full px-10 py-3.5 text-xs font-semibold uppercase tracking-[0.22em] text-white"
-              style={{
-                background: "rgba(0,0,0,0.45)",
-                border: "1px solid rgba(255,255,255,0.22)",
-                backdropFilter: "blur(18px)",
-              }}
-              whileHover={{
-                background: "rgba(0,0,0,0.65)",
-                borderColor: "rgba(255,255,255,0.45)",
-                scale: 1.05,
-              }}
-              whileTap={{ scale: 0.97 }}
-            >
-              Book a Set
-            </motion.a>
-
-            {/* Secondary — white ghost */}
-            <motion.a
-              href="#gallery"
-              className="inline-flex items-center justify-center rounded-full px-10 py-3.5 text-xs font-semibold uppercase tracking-[0.22em]"
-              style={{
-                background: "rgba(255,255,255,0.08)",
-                border: "1px solid rgba(255,255,255,0.2)",
-                color: "rgba(255,255,255,0.75)",
-                backdropFilter: "blur(18px)",
-              }}
-              whileHover={{
-                background: "rgba(255,255,255,0.16)",
-                borderColor: "rgba(255,255,255,0.4)",
-                color: "#fff",
-                scale: 1.05,
-              }}
-              whileTap={{ scale: 0.97 }}
-            >
-              View Gallery
-            </motion.a>
-          </motion.div>
-        )}
-      </div>
-
-      {/* ── Scroll indicator ── */}
-      {mounted && (
+        {/* CTAs */}
         <motion.div
-          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          className="flex flex-wrap gap-4 justify-center"
+          initial={{ opacity: 0, y: 16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.5, duration: 0.7 }}
+        >
+          <a
+            href="#booking"
+            className="px-8 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
+            style={{
+              background: "rgba(0,0,0,0.45)",
+              border: "1px solid rgba(255,255,255,0.18)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              color: "#fff",
+              fontFamily: "'Montserrat', sans-serif",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,0,144,0.25)";
+              e.currentTarget.style.borderColor = "rgba(255,0,144,0.5)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(0,0,0,0.45)";
+              e.currentTarget.style.borderColor = "rgba(255,255,255,0.18)";
+            }}
+          >
+            Book a Set
+          </a>
+          <a
+            href="#gallery"
+            className="px-8 py-3.5 rounded-full text-sm font-semibold tracking-wide transition-all duration-300"
+            style={{
+              background: "rgba(255,255,255,0.1)",
+              border: "1px solid rgba(255,255,255,0.22)",
+              backdropFilter: "blur(16px)",
+              WebkitBackdropFilter: "blur(16px)",
+              color: "rgba(255,255,255,0.85)",
+              fontFamily: "'Montserrat', sans-serif",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.18)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.1)";
+            }}
+          >
+            View Gallery
+          </a>
+        </motion.div>
+
+        {/* Stats */}
+        <motion.div
+          className="flex gap-10 mt-2"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.0, duration: 0.8 }}
+          transition={{ delay: 0.8, duration: 0.7 }}
         >
-          <span className="text-[9px] uppercase tracking-[0.35em] font-mono text-white/20">
-            Scroll
-          </span>
-          <div
-            className="w-[1px] h-10 overflow-hidden rounded-full"
-            style={{ background: "rgba(255,255,255,0.1)" }}
-          >
-            <motion.div
-              className="w-full bg-white/60"
-              style={{ height: "50%" }}
-              animate={{ y: ["-100%", "200%"] }}
-              transition={{ duration: 1.6, repeat: Infinity, ease: "easeInOut" }}
-            />
-          </div>
+          {[["5+", "Years"], ["200+", "Events"], ["100%", "Satisfaction"]].map(([val, label]) => (
+            <div key={label} className="flex flex-col items-center gap-1">
+              <span
+                className="text-xl font-bold"
+                style={{
+                  fontFamily: "'Montserrat', sans-serif",
+                  color: "#fff",
+                  textShadow: "0 0 20px rgba(255,0,144,0.6)",
+                }}
+              >
+                {val}
+              </span>
+              <span className="text-[10px] uppercase tracking-[0.22em] text-white/40">
+                {label}
+              </span>
+            </div>
+          ))}
         </motion.div>
-      )}
+      </div>
 
-      {/* ── Bottom fade to dark ── */}
-      <div
-        className="absolute bottom-0 left-0 right-0 h-40 pointer-events-none"
-        style={{
-          background: "linear-gradient(to bottom, transparent, rgba(5,5,5,0.95))",
-        }}
-      />
+      {/* Scroll indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 z-10">
+        <span className="text-[9px] uppercase tracking-[0.3em] text-white/30">Scroll</span>
+        <div className="relative h-10 w-[1px] overflow-hidden" style={{ background: "rgba(255,255,255,0.1)" }}>
+          <motion.div
+            className="absolute top-0 left-0 w-full"
+            style={{ background: "linear-gradient(to bottom, #ff0090, #ac58e1)", height: "40%" }}
+            animate={{ y: ["0%", "100%"] }}
+            transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </div>
+      </div>
     </section>
   );
 }

@@ -1,123 +1,239 @@
 import { useRef, useState } from "react";
-import { useInView, motion } from "framer-motion";
-import { galleryItems } from "../data";
+import { useInView, motion, AnimatePresence } from "framer-motion";
+import { galleryItems, type GalleryItem } from "../data";
 
-export default function Gallery() {
-  const ref = useRef<HTMLDivElement>(null);
-  const isInView = useInView(ref, { once: true, amount: 0.2 });
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+// ── Play icon ─────────────────────────────────────────────────────────────────
+function PlayIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10 text-white drop-shadow-lg">
+      <path d="M8 5v14l11-7z" />
+    </svg>
+  );
+}
+
+// ── Video badge ───────────────────────────────────────────────────────────────
+function VideoBadge() {
+  return (
+    <span
+      className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] uppercase tracking-[0.2em] font-semibold"
+      style={{
+        background: "rgba(255,0,144,0.75)",
+        backdropFilter: "blur(8px)",
+        color: "#fff",
+      }}
+    >
+      <svg viewBox="0 0 24 24" fill="currentColor" className="w-2.5 h-2.5"><path d="M8 5v14l11-7z" /></svg>
+      Video
+    </span>
+  );
+}
+
+// ── Lightbox ──────────────────────────────────────────────────────────────────
+function Lightbox({ item, onClose }: { item: GalleryItem; onClose: () => void }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
 
   return (
-    <section ref={ref} id="gallery" className="relative overflow-hidden px-6 py-24 sm:py-32">
-      {/* Animated background gradient */}
+    <AnimatePresence>
       <motion.div
-        className="absolute inset-0 -z-10"
-        style={{ pointerEvents: "none" }}
-        animate={{
-          background: `
-            radial-gradient(circle at 20% 30%, rgba(255,0,140,0.12) 0%, transparent 30%),
-            radial-gradient(circle at 80% 70%, rgba(0,160,255,0.12) 0%, transparent 30%),
-            radial-gradient(circle at 40% 80%, rgba(160,32,240,0.12) 0%, transparent 30%)
-          `,
-        }}
-        transition={{ type: "spring", damping: 20, stiffness: 80, duration: Infinity }}
-      />
+        className="fixed inset-0 z-50 flex items-center justify-center p-4"
+        style={{ background: "rgba(0,0,0,0.88)", backdropFilter: "blur(12px)" }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        onClick={onClose}
+      >
+        <motion.div
+          className="relative w-full max-w-5xl overflow-hidden rounded-2xl"
+          style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.1)" }}
+          initial={{ scale: 0.92, opacity: 0 }}
+          animate={{ scale: 1, opacity: 1 }}
+          exit={{ scale: 0.92, opacity: 0 }}
+          transition={{ type: "spring", stiffness: 260, damping: 28 }}
+          onClick={(e) => e.stopPropagation()}
+        >
+          {item.type === "video" ? (
+            <video
+              ref={videoRef}
+              src={item.video}
+              poster={item.poster}
+              controls
+              autoPlay
+              className="w-full aspect-video object-cover"
+              style={{ display: "block" }}
+            />
+          ) : (
+            <img
+              src={item.image}
+              alt={item.title}
+              className="w-full aspect-[16/10] object-cover"
+            />
+          )}
 
+          {/* Close button */}
+          <button
+            onClick={onClose}
+            className="absolute right-4 top-4 rounded-full p-2.5 transition-all duration-200"
+            style={{
+              background: "rgba(0,0,0,0.6)",
+              border: "1px solid rgba(255,255,255,0.15)",
+              backdropFilter: "blur(8px)",
+              color: "#fff",
+            }}
+            onMouseEnter={(e) => { e.currentTarget.style.background = "rgba(255,0,144,0.5)"; }}
+            onMouseLeave={(e) => { e.currentTarget.style.background = "rgba(0,0,0,0.6)"; }}
+          >
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          {/* Caption */}
+          <div
+            className="absolute bottom-4 left-4 rounded-xl px-4 py-2.5"
+            style={{
+              background: "rgba(0,0,0,0.55)",
+              backdropFilter: "blur(12px)",
+              border: "1px solid rgba(255,255,255,0.1)",
+            }}
+          >
+            <p className="text-[10px] uppercase tracking-[0.22em] text-white/40 font-medium">
+              {item.type === "video" ? "Video" : "Photo"}
+            </p>
+            <p className="mt-0.5 text-sm text-white font-medium">{item.title}</p>
+          </div>
+        </motion.div>
+      </motion.div>
+    </AnimatePresence>
+  );
+}
+
+// ── Gallery card ──────────────────────────────────────────────────────────────
+function GalleryCard({ item, index, isInView, onClick }: {
+  item: GalleryItem;
+  index: number;
+  isInView: boolean;
+  onClick: () => void;
+}) {
+  const isVideo = item.type === "video";
+  const thumbnail = isVideo ? item.poster : item.image;
+  const isTall = index % 3 === 0;
+
+  return (
+    <motion.div
+      className="group relative overflow-hidden rounded-2xl cursor-pointer"
+      style={{
+        minHeight: isTall ? "26rem" : "18rem",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.08)",
+      }}
+      initial={{ opacity: 0, y: 24, scale: 0.96 }}
+      animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
+      transition={{ delay: index * 0.07, duration: 0.6, ease: "easeOut" }}
+      onClick={onClick}
+      whileHover={{ scale: 1.02 }}
+    >
+      {/* Thumbnail */}
+      {thumbnail && (
+        <img
+          src={thumbnail}
+          alt={item.title}
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-108"
+          style={{ minHeight: "inherit" }}
+        />
+      )}
+
+      {/* Video badge */}
+      {isVideo && <VideoBadge />}
+
+      {/* Hover overlay */}
+      <div
+        className="absolute inset-0 flex items-center justify-center transition-all duration-300 opacity-0 group-hover:opacity-100"
+        style={{ background: "rgba(0,0,0,0.45)", backdropFilter: "blur(2px)" }}
+      >
+        <div
+          className="flex items-center justify-center rounded-full"
+          style={{
+            width: 64,
+            height: 64,
+            background: "rgba(255,0,144,0.8)",
+            boxShadow: "0 0 32px rgba(255,0,144,0.5)",
+          }}
+        >
+          {isVideo ? (
+            <PlayIcon />
+          ) : (
+            <svg viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth={2} className="w-7 h-7">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v3m0 0v3m0-3h3m-3 0H7" />
+            </svg>
+          )}
+        </div>
+      </div>
+
+      {/* Bottom gradient + title */}
+      <div
+        className="absolute inset-x-0 bottom-0 p-4"
+        style={{ background: "linear-gradient(to top, rgba(0,0,0,0.75) 0%, transparent 100%)" }}
+      >
+        <h3 className="text-sm font-semibold text-white/90">{item.title}</h3>
+      </div>
+    </motion.div>
+  );
+}
+
+// ── Gallery section ───────────────────────────────────────────────────────────
+export default function Gallery() {
+  const ref = useRef<HTMLDivElement>(null);
+  const isInView = useInView(ref, { once: true, amount: 0.15 });
+  const [selected, setSelected] = useState<GalleryItem | null>(null);
+
+  return (
+    <section
+      ref={ref}
+      id="gallery"
+      className="relative overflow-hidden px-6 py-24 sm:py-32"
+      style={{ background: "rgba(0,0,0,0.5)" }}
+    >
       <div className="mx-auto max-w-7xl">
+        {/* Header */}
         <motion.div
           className="mb-12 max-w-3xl"
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.6 }}
         >
-          <span className="section-kicker">Gallery</span>
-          <h2 className="display-heading mt-4 text-4xl font-bold sm:text-5xl lg:text-6xl">
+          <span
+            className="text-[11px] uppercase tracking-[0.35em] font-medium"
+            style={{ color: "rgba(255,0,144,0.8)" }}
+          >
+            Gallery
+          </span>
+          <h2
+            className="mt-4 text-4xl font-bold text-white sm:text-5xl lg:text-6xl"
+            style={{ fontFamily: "'Montserrat', sans-serif" }}
+          >
             Behind the decks
           </h2>
-          <p className="section-copy mt-5 text-base sm:text-lg">
-            Moments from stages, clubs, and late-night sets across the world.
+          <p className="mt-4 text-white/40 text-base leading-relaxed max-w-xl">
+            Moments from stages, clubs, and late-night sets. Click any photo or video to expand.
           </p>
         </motion.div>
 
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {/* Grid */}
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {galleryItems.map((item, i) => (
-            <motion.div
+            <GalleryCard
               key={item.id}
-              className="group relative overflow-hidden rounded-2xl bg-surface"
-              style={{
-                minHeight: i % 3 === 0 ? "26rem" : "18rem",
-                // slight 3D perspective
-                perspective: "1000px",
-              }}
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={isInView ? { opacity: 1, scale: 1, y: 0 } : {}}
-              transition={{ delay: i * 0.06, duration: 0.6, ease: "easeOut" }}
-              onClick={() => setSelectedId(item.id)}
-              whileHover={{
-                scale: 1.03,
-                rotateX: 5,
-                rotateY: 5,
-              }}
-            >
-              <img
-                src={item.image}
-                alt={item.title}
-                className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-bg via-transparent to-transparent opacity-40 transition-opacity duration-300 group-hover:opacity-60" />
-              
-              <div className="absolute inset-x-0 bottom-0 p-4">
-                <p className="text-xs uppercase tracking-[0.24em] text-muted font-medium">
-                  Frame {item.id}
-                </p>
-                <h3 className="mt-2 max-w-sm text-lg font-semibold text-text">
-                  {item.title}
-                </h3>
-              </div>
-              
-              <div className="absolute right-3 top-3 rounded-lg border border-stroke/50 bg-bg/60 px-3 py-2 text-xs uppercase tracking-[0.2em] text-muted font-medium opacity-0 transition-opacity duration-300 group-hover:opacity-100 backdrop-blur-sm">
-                View
-              </div>
-            </motion.div>
+              item={item}
+              index={i}
+              isInView={isInView}
+              onClick={() => setSelected(item)}
+            />
           ))}
         </div>
-
-        {selectedId && (
-          <motion.div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-bg/92 p-4 backdrop-blur-sm"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={() => setSelectedId(null)}
-          >
-            <motion.div
-              className="relative w-full max-w-4xl overflow-hidden rounded-2xl bg-surface"
-              initial={{ scale: 0.92, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.92, opacity: 0 }}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <img
-                src={galleryItems.find((item) => item.id === selectedId)?.image}
-                alt="Expanded"
-                className="aspect-[16/10] w-full object-cover"
-              />
-              <button
-                onClick={() => setSelectedId(null)}
-                className="absolute right-4 top-4 rounded-lg border border-stroke/50 bg-bg/75 p-3 text-text transition-colors hover:bg-surface-strong backdrop-blur-sm"
-              >
-                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              <div className="absolute bottom-4 left-4 max-w-sm bg-surface/80 px-4 py-3 rounded-lg backdrop-blur-sm border border-stroke/40">
-                <p className="text-xs uppercase tracking-[0.2em] text-muted font-medium">Frame</p>
-                <p className="mt-1 text-sm text-text">{galleryItems.find((item) => item.id === selectedId)?.title}</p>
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
       </div>
+
+      {/* Lightbox */}
+      {selected && <Lightbox item={selected} onClose={() => setSelected(null)} />}
     </section>
   );
 }
