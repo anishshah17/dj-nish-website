@@ -26,7 +26,7 @@ function useLenis() {
 }
 
 // ─── Global Shader Background ─────────────────────────────────────────────────
-// Renders once, fixed behind all sections at z-index -1
+// Renders once, fixed behind all sections. z-index -1 so it sits behind content.
 function GlobalShaderBackground() {
   return (
     <div

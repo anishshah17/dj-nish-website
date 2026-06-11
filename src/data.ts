@@ -4,12 +4,12 @@
 // For videos: set `video` to a URL or local path (e.g. "/videos/set1.mp4")
 //             and `poster` to a thumbnail image shown before play.
 export const galleryItems: GalleryItem[] = [
-  { id: 1, title: "Gallery Photo 1", type: "image", image: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?auto=format&fit=crop&w=800&q=85" },
-  { id: 2, title: "Gallery Photo 2", type: "image", image: "https://images.unsplash.com/photo-1516450360452-9312f5e86fc7?auto=format&fit=crop&w=800&q=85" },
-  { id: 3, title: "Live Set",        type: "video", video: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4", poster: "https://images.unsplash.com/photo-1501386761578-eac5c94b800a?auto=format&fit=crop&w=800&q=85" },
-  { id: 4, title: "Gallery Photo 4", type: "image", image: "https://images.unsplash.com/photo-1514525253161-7a46d19cd819?auto=format&fit=crop&w=800&q=85" },
-  { id: 5, title: "Gallery Photo 5", type: "image", image: "https://images.unsplash.com/photo-1528722828814-77b9b83aafb2?auto=format&fit=crop&w=800&q=85" },
-  { id: 6, title: "Gallery Photo 6", type: "image", image: "https://images.unsplash.com/photo-1506157786151-b8491531f063?auto=format&fit=crop&w=800&q=85" },
+  { id: 1, title: "Alive 10-Year Celebration",   type: "image", image: "/gallery/IMG_0890.jpg" },
+  { id: 2, title: "Purple Lights",                type: "image", image: "/gallery/IMG_1915.jpg" },
+  { id: 3, title: "Backyard Set",                 type: "image", image: "/gallery/IMG_3765.jpg" },
+  { id: 4, title: "Ignite Asha Junior Board",     type: "image", image: "/gallery/IMG_3967.jpg" },
+  { id: 5, title: "Grad Party",                   type: "image", image: "/gallery/My_Grad_Party_by_Portraits_by_CeCee.jpg" },
+  { id: 6, title: "Live Set",                     type: "video", video: "/gallery/IMG_5968.mp4", poster: "/gallery/IMG_1915.jpg" },
 ];
 
 export type GalleryItem = {

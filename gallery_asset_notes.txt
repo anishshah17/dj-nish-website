@@ -1,0 +1,29 @@
+Gallery asset review on 2026-06-11:
+
+Source folder: /home/ubuntu/dj-nish-website/gallery
+Converted public folder: /home/ubuntu/dj-nish-website/public/gallery
+
+Assets identified:
+- IMG_0890.jpg: indoor DJ setup in front of colorful wall art / anniversary backdrop.
+- IMG_1915.jpg: purple-lit indoor DJ booth with flags in background.
+- IMG_3765.jpg: outdoor backyard/poolside DJ setup with A-TEK branded table cover.
+- IMG_3967.jpg: outdoor pavilion/community event with Ignite Asha banner.
+- My_Grad_Party_by_Portraits_by_CeCee.jpg: formal indoor event / grad party setup with strong light flare.
+- IMG_5968.mp4: converted from MOV for gallery video use.
+
+Conversion outputs created in /home/ubuntu/dj-nish-website/public/gallery:
+- IMG_0890.jpg
+- IMG_1915.jpg
+- IMG_3765.jpg
+- IMG_3967.jpg
+- My_Grad_Party_by_Portraits_by_CeCee.jpg
+- IMG_5968.mp4
+
+Potential issue to investigate:
+- Full-page shader may be hidden by global/body background or negative z-index stacking; inspect global CSS and root container backgrounds.
+- Landing page and section overlays should stay subtle so shader remains visible across scroll.
+
+User request to complete:
+1. Use these real gallery images/videos instead of placeholders.
+2. Restore subtle animated gradient visibility across full site.
+3. Keep modern, minimal look.
