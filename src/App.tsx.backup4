@@ -11,7 +11,6 @@ import Gallery from "./sections/Gallery";
 import Instagram from "./sections/Instagram";
 import Booking from "./sections/Booking";
 import Footer from "./sections/Footer";
-import ShaderGradient2 from "../ShaderGradient2";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,72 +36,91 @@ function useLenis() {
   }, []);
 }
 
-// ─── Shader Intro: animated shader background + logo reveal ───────────────
-function ShaderIntro({ onComplete }: { onComplete: () => void }) {
+// ─── Creative intro: DJ‑style equalizer bars + logo reveal ───────────────────
+function CreativeIntro({ onComplete }: { onComplete: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.classList.add("loading");
 
-    // Fade in logo after a short delay
+    // Animate equalizer bars
+    const tl = gsap.timeline({ paused: true });
+    // set initial state
+    gsap.set(".eq-bar", { height: 0, backgroundColor: () => `hsl(${Math.random() * 360}, 80%, 60%)` });
+    // animate each bar to a random height, yoyo, repeat
+    gsap.to(".eq-bar", {
+      height: () => Math.random() * 80 + 20, // 20-100px
+      duration: () => 0.6 + Math.random() * 0.4,
+      repeat: -1,
+      yoyo: true,
+      ease: "sine.inOut",
+      stagger: {
+        amount: 0.4,
+        from: "random",
+      },
+    });
+
+    // After a short delay, fade in logo with glow
     const logoTimeout = setTimeout(() => {
       if (logoRef.current) {
-        gsap.fromTo(
-          logoRef.current,
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" }
-        );
-        // Outer glow pulse
+        gsap.to(logoRef.current, { opacity: 1, duration: 0.8 });
+        // outer glow pulse
         gsap.to(logoRef.current, {
-          filter: "drop-shadow(0 0 8px rgba(255,0,140,0.6))",
-          duration: 1.8,
+          filter: "drop-shadow(0 0 12px rgba(255,0,140,0.6))",
+          duration: 1.5,
           repeat: -1,
           yoyo: true,
         });
       }
-    }, 500);
+    }, 800);
 
-    // After total duration, fade out shader and logo, then complete
+    // After total duration, fade out everything and complete
     const endTimeout = setTimeout(() => {
-      gsap.to([containerRef.current, logoRef.current], {
-        opacity: 0,
-        duration: 0.8,
-        onComplete: () => {
-          document.body.classList.remove("loading");
-          onComplete();
-        },
+      // fade out bars and logo
+      gsap.to([".eq-bar", logoRef.current], { opacity: 0, duration: 0.6 });
+      gsap.delayedCall(0.6, () => {
+        document.body.classList.remove("loading");
+        onComplete();
       });
-    }, 6000); // 6 seconds total
+    }, 3000);
 
     return () => {
       clearTimeout(logoTimeout);
       clearTimeout(endTimeout);
+      gsap.killTweensOf(".eq-bar");
       gsap.killTweensOf(logoRef.current);
-      gsap.killTweensOf(containerRef.current);
     };
   }, []);
 
   return (
     <motion.div
       ref={containerRef}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
-      style={{ background: "#050505" }}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-off-black"
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Shader background */}
-      <div className="absolute inset-0"><ShaderGradient2 /></div>
+      <div className="relative flex space-x-1">
+        {/* Equalizer bars */}
+        {[...Array(12)].map((_, i) => (
+          <div
+            key={i}
+            className="eq-bar w-1.5 bg-neon-pink rounded-t"
+            style={{ height: 0 }}
+          />
+        ))}
+      </div>
+
       {/* Logo */}
       <motion.div
         ref={logoRef}
-        className="relative z-10"
+        className="mt-4"
         style={{ opacity: 0 }}
       >
         <img
           src="/nish-logo.png"
           alt="DJ Nish"
-          className="h-20 w-20"
+          className="h-16 w-16"
         />
       </motion.div>
     </motion.div>
@@ -117,7 +135,7 @@ export default function App() {
   return (
     <>
       <AnimatePresence>
-        {isLoading ? <ShaderIntro onComplete={() => setIsLoading(false)} /> : null}
+        {isLoading ? <CreativeIntro onComplete={() => setIsLoading(false)} /> : null}
       </AnimatePresence>
 
       <Navbar />

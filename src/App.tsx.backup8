@@ -1,0 +1,290 @@
+import { AnimatePresence, motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
+import Lenis from "lenis";
+
+import Navbar from "./sections/Navbar";
+import Hero from "./sections/Hero";
+import About from "./sections/About";
+import Gallery from "./sections/Gallery";
+import Instagram from "./sections/Instagram";
+import Booking from "./sections/Booking";
+import Footer from "./sections/Footer";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// ─── Initialize Lenis for smooth scrolling ────────────────────────────────────
+function useLenis() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      wheelMultiplier: 1,
+      gestureOrientation: "vertical",
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+}
+
+// ─── Bass Intro: particle wave → turntable → logo ───────────────────────────
+function BassIntro({ onComplete }: { onComplete: () => void }) {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const logoRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.body.classList.add("loading");
+    const canvas = canvasRef.current;
+    if (!canvas) {
+      onComplete();
+      return;
+    }
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+      onComplete();
+      return;
+    }
+    // After null checks, canvas and ctx are guaranteed non-null
+    const canvasNotNull = canvas;
+    const ctxNotNull = ctx;
+    // resize canvas to window
+    function resize() {
+      canvasNotNull.width = window.innerWidth;
+      canvasNotNull.height = window.innerHeight;
+    }
+    window.addEventListener("resize", resize);
+    resize();
+
+    // parameters
+    const particleCount = 400;
+    const colors = ["#FF008C", "#A020F0", "#15B8FF", "#FFFFFF", "#C0C0C0"]; // neon pink, purple, cyan, white, silver
+    const center = { x: canvasNotNull.width / 2, y: canvasNotNull.height / 2 };
+    const turntableRadius = 120;
+    const logoFadeInStart = 5.0; // seconds
+    const totalDuration = 8.0; // seconds
+
+    // particle interface
+    interface Particle {
+      x: number;
+      y: number;
+      vx: number;
+      vy: number;
+      tx: number; // target x
+      ty: number; // target y
+      radius: number;
+      color: string;
+      opacity: number;
+    }
+
+    const particles: Particle[] = [];
+    for (let i = 0; i < particleCount; i++) {
+      const angle = Math.random() * Math.PI * 2;
+      const radius = Math.random() * canvasNotNull.width * 0.4;
+      particles.push({
+        x: center.x + Math.cos(angle) * radius,
+        y: center.y + Math.sin(angle) * radius,
+        vx: 0,
+        vy: 0,
+        tx: center.x, // will be set per phase
+        ty: center.y,
+        radius: 1 + Math.random() * 2,
+        color: colors[Math.floor(Math.random() * colors.length)],
+        opacity: Math.random() * 0.6 + 0.4,
+      });
+    }
+
+    let startTime = performance.now();
+    let beatTime = 0;
+    const beatInterval = 0.5; // seconds
+    let pulseRadius = 0; // for beat effect
+
+    // phase targets
+    function setTurntableTargets() {
+      particles.forEach(p => {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = turntableRadius * (0.5 + Math.random() * 0.5); // some thickness
+        p.tx = center.x + Math.cos(angle) * radius;
+        p.ty = center.y + Math.sin(angle) * radius;
+      });
+    }
+    function setRandomTargets() {
+      particles.forEach(p => {
+        const angle = Math.random() * Math.PI * 2;
+        const radius = Math.random() * canvasNotNull.width * 0.4;
+        p.tx = center.x + Math.cos(angle) * radius;
+        p.ty = center.y + Math.sin(angle) * radius;
+      });
+    }
+    setRandomTargets(); // initial
+
+    // animation loop
+    function animate(now: number) {
+      const elapsed = (now - startTime) / 1000; // seconds
+      if (elapsed > totalDuration) {
+        // end
+        ctxNotNull.clearRect(0, 0, canvasNotNull.width, canvasNotNull.height);
+        window.cancelAnimationFrame(animFrame);
+        window.removeEventListener("resize", resize);
+        document.body.classList.remove("loading");
+        onComplete();
+        return;
+      }
+
+      // beat detection
+      if (elapsed - beatTime >= beatInterval) {
+        beatTime = elapsed;
+        pulseRadius = 30; // start pulse
+      }
+      // decay pulse
+      if (pulseRadius > 0) pulseRadius -= 16 * (1 / 60); // approximate decay per frame (assuming 60fps)
+
+      // update phase targets
+      if (elapsed < 2.0) {
+        // first 2 sec: random drift
+        setRandomTargets();
+      } else if (elapsed < 5.0) {
+        // 2-5 sec: form turntable
+        setTurntableTargets();
+      } else {
+        // after 5 sec: fade out particles, logo will fade in via CSS/GSAP
+        // we'll just let particles fade out via opacity later
+      }
+
+      // clear
+      ctxNotNull.clearRect(0, 0, canvasNotNull.width, canvasNotNull.height);
+
+      // update & draw particles
+      particles.forEach(p => {
+        // ease towards target
+        const dx = p.tx - p.x;
+        const dy = p.ty - p.y;
+        p.vx += dx * 0.05;
+        p.vy += dy * 0.05;
+        p.vx *= 0.9;
+        p.vy *= 0.9;
+        p.x += p.vx;
+        p.y += p.vy;
+
+        // beat pulse: push outward from center briefly
+        if (pulseRadius > 0) {
+          const dxc = p.x - center.x;
+          const dyc = p.y - center.y;
+          const dist = Math.sqrt(dxc * dxc + dyc * dyc) || 0.001;
+          const force = (pulseRadius - dist) * 0.02;
+          if (force > 0) {
+            p.vx += (dxc / dist) * force;
+            p.vy += (dyc / dist) * force;
+          }
+        }
+
+        // opacity fade based on phase
+        let opacity = p.opacity;
+        if (elapsed > 4.5) {
+          // fade out after 4.5s
+          opacity *= Math.max(0, 1 - (elapsed - 4.5) / 1.5);
+        }
+        ctxNotNull.beginPath();
+        ctxNotNull.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+        ctxNotNull.fillStyle = p.color;
+        ctxNotNull.globalAlpha = opacity;
+        ctxNotNull.fill();
+      });
+
+      // draw turntable ring (optional)
+      if (elapsed > 2.0 && elapsed < 5.0) {
+        ctxNotNull.beginPath();
+        ctxNotNull.arc(center.x, center.y, turntableRadius, 0, Math.PI * 2);
+        ctxNotNull.strokeStyle = "rgba(255,255,255,0.2)";
+        ctxNotNull.lineWidth = 2;
+        ctxNotNull.stroke();
+      }
+
+      // request next frame
+      animFrame = window.requestAnimationFrame(animate);
+    }
+
+    let animFrame = window.requestAnimationFrame(animate);
+
+    // cleanup
+    return () => {
+      window.cancelAnimationFrame(animFrame);
+      window.removeEventListener("resize", resize);
+      document.body.classList.remove("loading");
+    };
+  }, []);
+
+  // Logo appears after intro via GSAP fade-in (we'll let it be visible and control opacity)
+  useEffect(() => {
+    if (!logoRef.current) return;
+    gsap.fromTo(
+      logoRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 1, delay: 5.5, ease: "power3.out" }
+    );
+    // outer glow pulse
+    gsap.to(logoRef.current, {
+      filter: "drop-shadow(0 0 12px rgba(255,0,140,0.6))",
+      duration: 2,
+      repeat: -1,
+      yoyo: true,
+      delay: 5.5,
+    });
+  }, []);
+
+  return (
+    <>
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black">
+        <canvas ref={canvasRef} className="block" />
+      </div>
+      <motion.div
+        ref={logoRef}
+        className="absolute inset-0 flex items-center justify-center z-[101] pointer-events-none"
+        style={{ opacity: 0 }}
+      >
+        <img
+          src="/nish-logo.png"
+          alt="DJ Nish"
+          className="h-20 w-20"
+        />
+      </motion.div>
+    </>
+  );
+}
+
+// ─── App ─────────────────────────────────────────────────────────────────────
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  useLenis();
+
+  return (
+    <>
+      <AnimatePresence>
+        {isLoading ? <BassIntro onComplete={() => setIsLoading(false)} /> : null}
+      </AnimatePresence>
+
+      <Navbar />
+
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <Hero />
+        <About />
+        <Gallery />
+        <Instagram />
+        <Booking />
+        <Footer />
+      </motion.main>
+    </>
+  );
+}

@@ -1,0 +1,226 @@
+import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
+
+export default function Hero() {
+  const heroRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+
+  // Animated logo sequence: N-I-S-H
+  const letters = "NISH".split("");
+
+  // Track mouse position for cursor follow effect
+  useEffect(() => {
+    const handleMouseMove = (e: MouseEvent) => {
+      if (!containerRef.current) return;
+      const rect = containerRef.current.getBoundingClientRect();
+      setMousePos({
+        x: (e.clientX - rect.left) / rect.width,
+        y: (e.clientY - rect.top) / rect.height,
+      });
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    return () => window.removeEventListener("mousemove", handleMouseMove);
+  }, []);
+
+  // Animate particles on mount
+  useEffect(() => {
+    const particles = document.querySelectorAll(".particle");
+    particles.forEach((particle, i) => {
+      gsap.to(particle, {
+        y: Math.sin(i * 0.5) * 20,
+        x: Math.cos(i * 0.3) * 15,
+        duration: 4 + i * 0.5,
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+      });
+    });
+  }, []);
+
+  return (
+    <section
+      ref={heroRef}
+      className="relative h-screen w-full overflow-hidden flex items-center justify-center"
+      style={{
+        background: "#050505",
+      }}
+    >
+      {/* Reactive background gradient following cursor */}
+      <motion.div
+        className="absolute inset-0"
+        animate={{
+          background: `radial-gradient(circle at ${mousePos.x * 100}% ${
+            mousePos.y * 100
+          }%, rgba(160, 32, 240, 0.15) 0%, rgba(21, 184, 255, 0.08) 30%, rgba(5, 5, 5, 0) 70%)`,
+        }}
+        transition={{ type: "spring", damping: 30, stiffness: 100 }}
+      />
+
+      {/* Animated particles (responsive to scroll/mouse) */}
+      <div className="absolute inset-0 pointer-events-none">
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="particle absolute w-1.5 h-1.5 rounded-full opacity-40"
+            style={{
+              left: `${(i * 17.5) % 100}%`,
+              top: `${((i * 19) % 100) + 20}%`,
+              background: i % 3 === 0 ? "#FF008C" : i % 3 === 1 ? "#A020F0" : "#15B8FF",
+            }}
+            animate={{
+              scale: [1, 1.5, 1],
+              opacity: [0.3, 0.6, 0.3],
+            }}
+            transition={{
+              duration: 3 + i * 0.3,
+              repeat: Infinity,
+              ease: "easeInOut",
+            }}
+          />
+        ))}
+      </div>
+
+      {/* Main content container */}
+      <div
+        ref={containerRef}
+        className="relative z-10 flex flex-col items-center justify-center gap-8 px-6 text-center"
+      >
+        {/* Animated logo sequence: N-I-S-H */}
+        <div className="flex gap-2 sm:gap-4">
+          {letters.map((letter, i) => (
+            <motion.div
+              key={i}
+              className="relative"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                delay: i * 0.4,
+                duration: 0.6,
+                ease: "easeOut",
+              }}
+            >
+              <h1
+                className="display-heading text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-900 tracking-tight"
+                style={{
+                  background: "linear-gradient(135deg, #FF008C, #A020F0, #15B8FF)",
+                  backgroundClip: "text",
+                  WebkitBackgroundClip: "text",
+                  color: "transparent",
+                }}
+              >
+                {letter}
+              </h1>
+
+              {/* Glow pulse effect on logo */}
+              <motion.div
+                className="absolute inset-0 rounded-lg blur-xl -z-10"
+                style={{
+                  background: "linear-gradient(135deg, #FF008C, #A020F0)",
+                  opacity: 0,
+                }}
+                animate={{
+                  opacity: [0.3, 0.6, 0.3],
+                  scale: [1, 1.2, 1],
+                }}
+                transition={{
+                  delay: i * 0.4 + 0.3,
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut",
+                }}
+              />
+            </motion.div>
+          ))}
+        </div>
+
+        {/* Headline */}
+        <motion.h2
+          className="text-white font-light tracking-wide text-lg sm:text-xl md:text-2xl max-w-2xl"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{
+            delay: 1.8,
+            duration: 0.6,
+          }}
+        >
+          Creating unforgettable experiences through music.
+        </motion.h2>
+
+        {/* CTA Buttons */}
+        <motion.div
+          className="flex flex-col sm:flex-row gap-4 mt-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{
+            delay: 2.2,
+            duration: 0.6,
+          }}
+        >
+          <a
+            href="#booking"
+            className="px-8 py-4 text-sm font-semibold uppercase tracking-[0.1em] rounded-full transition-all duration-300 text-white"
+            style={{
+              background: "#FF008C",
+              border: "1px solid #FF008C",
+            }}
+            onMouseEnter={(e) => {
+              gsap.to(e.currentTarget, {
+                scale: 1.05,
+                duration: 0.2,
+              });
+            }}
+            onMouseLeave={(e) => {
+              gsap.to(e.currentTarget, {
+                scale: 1,
+                duration: 0.2,
+              });
+            }}
+          >
+            Book Now
+          </a>
+          <a
+            href="#booking"
+            className="px-8 py-4 text-sm font-semibold uppercase tracking-[0.1em] rounded-full transition-all duration-300 text-white"
+            style={{
+              background: "transparent",
+              border: "1px solid #BFBFBF",
+            }}
+            onMouseEnter={(e) => {
+              gsap.to(e.currentTarget, {
+                scale: 1.05,
+                duration: 0.2,
+              });
+            }}
+            onMouseLeave={(e) => {
+              gsap.to(e.currentTarget, {
+                scale: 1,
+                duration: 0.2,
+              });
+            }}
+          >
+            Watch Live Sets
+          </a>
+        </motion.div>
+      </div>
+
+      {/* Scroll indicator */}
+      <motion.div
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-2"
+        animate={{ y: [0, 8, 0] }}
+        transition={{
+          delay: 2.5,
+          duration: 2,
+          repeat: Infinity,
+        }}
+      >
+        <p className="text-xs uppercase tracking-[0.25em] text-soft-gray">Scroll to explore</p>
+        <svg className="w-5 h-5 text-soft-gray" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+        </svg>
+      </motion.div>
+    </section>
+  );
+}

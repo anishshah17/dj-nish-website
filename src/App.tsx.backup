@@ -1,0 +1,153 @@
+import { AnimatePresence, motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
+import Lenis from "lenis";
+
+import Navbar from "./sections/Navbar";
+import Hero from "./sections/Hero";
+import About from "./sections/About";
+import Gallery from "./sections/Gallery";
+import Instagram from "./sections/Instagram";
+import Booking from "./sections/Booking";
+import Footer from "./sections/Footer";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// ─── Initialize Lenis for smooth scrolling ────────────────────────────────────
+function useLenis() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      wheelMultiplier: 1,
+      gestureOrientation: "vertical",
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+}
+
+// ─── Loading screen with opening sequence ────────────────────────────────────
+function LoadingScreen({ onComplete }: { onComplete: () => void }) {
+  const [count, setCount] = useState(0);
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.body.classList.add("loading");
+
+    const start = performance.now();
+    let frame = 0;
+    let completed = false;
+
+    const tick = (time: number) => {
+      const progress = Math.min((time - start) / 2200, 1);
+      const eased = 1 - Math.pow(1 - progress, 4);
+      const nextCount = Math.round(eased * 100);
+      setCount(nextCount);
+
+      if (progress < 1) {
+        frame = requestAnimationFrame(tick);
+        return;
+      }
+
+      if (!completed) {
+        completed = true;
+
+        if (containerRef.current) {
+          gsap.to(containerRef.current, {
+            opacity: 0,
+            duration: 0.6,
+            ease: "power2.in",
+            onComplete: () => {
+              document.body.classList.remove("loading");
+              onComplete();
+            },
+          });
+        }
+      }
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [onComplete]);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-off-black"
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <div className="relative z-10 flex w-full max-w-md flex-col items-center gap-8 px-6">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5 }}
+        >
+          <p className="text-xs uppercase tracking-[0.5em] text-soft-gray">DJ Nish</p>
+        </motion.div>
+
+        <motion.h1
+          className="display-heading text-4xl font-bold text-center text-white"
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.1 }}
+        >
+          Opening the room.
+        </motion.h1>
+
+        <div className="w-full">
+          <div className="relative h-px overflow-hidden bg-stroke/40 rounded-full">
+            <motion.div
+              className="absolute inset-y-0 left-0 rounded-full"
+              style={{ width: `${count}%`, background: "var(--neon-pink)" }}
+            />
+          </div>
+          <div className="mt-3 text-center text-[0.65rem] uppercase tracking-[0.28em] text-soft-gray">
+            {count}%
+          </div>
+        </div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── App ─────────────────────────────────────────────────────────────────────
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  useLenis();
+
+  return (
+    <>
+      <AnimatePresence>
+        {isLoading ? <LoadingScreen onComplete={() => setIsLoading(false)} /> : null}
+      </AnimatePresence>
+
+      <Navbar />
+
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <Hero />
+        <About />
+        <Gallery />
+        <Instagram />
+        <Booking />
+        <Footer />
+      </motion.main>
+    </>
+  );
+}

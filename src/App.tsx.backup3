@@ -1,0 +1,195 @@
+import { AnimatePresence, motion } from "framer-motion";
+import gsap from "gsap";
+import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useEffect, useRef, useState } from "react";
+import Lenis from "lenis";
+
+import Navbar from "./sections/Navbar";
+import Hero from "./sections/Hero";
+import About from "./sections/About";
+import Gallery from "./sections/Gallery";
+import Instagram from "./sections/Instagram";
+import Booking from "./sections/Booking";
+import Footer from "./sections/Footer";
+
+gsap.registerPlugin(ScrollTrigger);
+
+// ─── Initialize Lenis for smooth scrolling ────────────────────────────────────
+function useLenis() {
+  useEffect(() => {
+    const lenis = new Lenis({
+      lerp: 0.1,
+      wheelMultiplier: 1,
+      gestureOrientation: "vertical",
+    });
+
+    function raf(time: number) {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    }
+
+    requestAnimationFrame(raf);
+
+    return () => {
+      lenis.destroy();
+    };
+  }, []);
+}
+
+// ─── Loading screen with opening sequence (vinyl record + needle drop) ───────
+function LoadingScreen({ onComplete }: { onComplete: () => void }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const recordRef = useRef<HTMLDivElement>(null);
+  const needleRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    document.body.classList.add("loading");
+
+    const start = performance.now();
+    let frame = 0;
+    let completed = false;
+
+    const tick = (time: number) => {
+      const progress = Math.min((time - start) / 2500, 1); // 2.5 sec total
+      const eased = 1 - Math.pow(1 - progress, 3); // ease-out cubic
+      if (progress < 1) {
+        frame = requestAnimationFrame(tick);
+        return;
+      }
+
+      if (!completed) {
+        completed = true;
+
+        // Fade out container
+        if (containerRef.current) {
+          gsap.to(containerRef.current, {
+            opacity: 0,
+            duration: 0.6,
+            ease: "power2.in",
+            onComplete: () => {
+              document.body.classList.remove("loading");
+              onComplete();
+            },
+          });
+        } else {
+          setTimeout(() => {
+            document.body.classList.remove("loading");
+            onComplete();
+          }, 600);
+        }
+
+        // Spin record continuously after load
+        if (recordRef.current) {
+          gsap.to(recordRef.current, {
+            rotation: "+=360",
+            duration: 8,
+            repeat: -1,
+            ease: "none",
+          });
+        }
+
+        // Needle drop animation: start above, drop onto record, slight bounce
+        if (needleRef.current) {
+          gsap.fromTo(
+            needleRef.current,
+            { y: "-100%" }, // start far above
+            {
+              y: "0%", // end at record surface (adjusted via transform origin)
+              duration: 0.8,
+              ease: "power2.out",
+            }
+          );
+          // Add a small bounce
+          gsap.to(needleRef.current, {
+            y: "-2%",
+            duration: 0.3,
+            delay: 0.8,
+            yoyo: true,
+            repeat: 1,
+            ease: "power1.inOut",
+          });
+        }
+      }
+    };
+
+    frame = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [onComplete]);
+
+  return (
+    <motion.div
+      ref={containerRef}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-off-black"
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.4 }}
+    >
+      <div className="relative z-10 flex flex-col items-center gap-6 px-6">
+        {/* Vinyl record (logo) */}
+        <motion.div
+          ref={recordRef}
+          className="relative w-28 h-28"
+          style={{
+            backgroundImage: "url('/nish-logo.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            borderRadius: "50%",
+          }}
+        >
+          {/* Vinyl grooves */}
+          <div className="absolute inset-0 rounded-full" style={{
+            background: "radial-gradient(circle at 50% 50%, transparent 0%, transparent 40%, rgba(255,255,255,0.02) 40%, rgba(255,255,255,0.02) 42%, transparent 42%, transparent 58%, rgba(255,255,255,0.02) 58%, rgba(255,255,255,0.02) 60%, transparent 60%, transparent 70%, rgba(255,255,255,0.02) 72%, transparent 72%)",
+            pointerEvents: "none",
+          }} />
+          {/* Record label */}
+          <div className="absolute inset-0 rounded-full" style={{
+            background: "radial-gradient(circle at 50% 50%, rgba(255,0,140,0.2) 0%, rgba(255,0,140,0.1) 70%, transparent 70%)",
+            mixBlendMode: "multiply",
+          }} />
+        </motion.div>
+
+        {/* Needle */}
+        <motion.div
+          ref={needleRef}
+          className="absolute -left-3 top-0 w-0.5 h-8 bg-neon-pink"
+          style={{
+            transformOrigin: "bottom",
+          }}
+        >
+          {/* Needle tip */}
+          <div className="absolute -top-0.5 left-/-0.5 w-2 h-2 bg-neon-pink rounded-full" />
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+}
+
+// ─── App ─────────────────────────────────────────────────────────────────────
+export default function App() {
+  const [isLoading, setIsLoading] = useState(true);
+  useLenis();
+
+  return (
+    <>
+      <AnimatePresence>
+        {isLoading ? <LoadingScreen onComplete={() => setIsLoading(false)} /> : null}
+      </AnimatePresence>
+
+      <Navbar />
+
+      <motion.main
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, ease: "easeOut" }}
+      >
+        <Hero />
+        <About />
+        <Gallery />
+        <Instagram />
+        <Booking />
+        <Footer />
+      </motion.main>
+    </>
+  );
+}

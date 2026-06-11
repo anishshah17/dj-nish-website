@@ -11,7 +11,6 @@ import Gallery from "./sections/Gallery";
 import Instagram from "./sections/Instagram";
 import Booking from "./sections/Booking";
 import Footer from "./sections/Footer";
-import ShaderGradient2 from "../ShaderGradient2";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -37,66 +36,65 @@ function useLenis() {
   }, []);
 }
 
-// ─── Shader Intro: animated shader background + logo reveal ───────────────
-function ShaderIntro({ onComplete }: { onComplete: () => void }) {
+// ─── Refined intro: subtle logo pulse + soft animated accents ───────────────
+function RefinedIntro({ onComplete }: { onComplete: () => void }) {
   const containerRef = useRef<HTMLDivElement>(null);
   const logoRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     document.body.classList.add("loading");
 
-    // Fade in logo after a short delay
-    const logoTimeout = setTimeout(() => {
-      if (logoRef.current) {
-        gsap.fromTo(
-          logoRef.current,
-          { opacity: 0, scale: 0.8 },
-          { opacity: 1, scale: 1, duration: 1.2, ease: "power3.out" }
-        );
-        // Outer glow pulse
-        gsap.to(logoRef.current, {
-          filter: "drop-shadow(0 0 8px rgba(255,0,140,0.6))",
-          duration: 1.8,
-          repeat: -1,
-          yoyo: true,
-        });
+    // Animate logo: fade in, scale, then add a soft glow pulse
+    gsap.fromTo(
+      logoRef.current,
+      { opacity: 0, scale: 0.9 },
+      {
+        opacity: 1,
+        scale: 1,
+        duration: 1.2,
+        ease: "power3.out",
       }
-    }, 500);
+    );
 
-    // After total duration, fade out shader and logo, then complete
-    const endTimeout = setTimeout(() => {
-      gsap.to([containerRef.current, logoRef.current], {
+    // Outer glow pulse (repeat)
+    gsap.to(logoRef.current, {
+      filter: "drop-shadow(0 0 8px rgba(255,0,140,0.6))",
+      duration: 1.8,
+      repeat: -1,
+      yoyo: true,
+    });
+
+    // Optional subtle scale pulse
+    gsap.to(logoRef.current, {
+      scale: [1, 1.04, 1],
+      duration: 2.5,
+      repeat: -1,
+      ease: "sine.inOut",
+    });
+
+    // After intro duration, fade out and reveal content
+    gsap.delayedCall(4.5, () => {
+      gsap.to([logoRef.current, ".accent"], {
         opacity: 0,
-        duration: 0.8,
+        duration: 0.6,
         onComplete: () => {
           document.body.classList.remove("loading");
           onComplete();
         },
       });
-    }, 6000); // 6 seconds total
-
-    return () => {
-      clearTimeout(logoTimeout);
-      clearTimeout(endTimeout);
-      gsap.killTweensOf(logoRef.current);
-      gsap.killTweensOf(containerRef.current);
-    };
+    });
   }, []);
 
   return (
     <motion.div
       ref={containerRef}
-      className="fixed inset-0 z-[100] flex flex-col items-center justify-center"
-      style={{ background: "#050505" }}
+      className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-black"
       exit={{ opacity: 0 }}
       transition={{ duration: 0.4 }}
     >
-      {/* Shader background */}
-      <div className="absolute inset-0"><ShaderGradient2 /></div>
-      {/* Logo */}
       <motion.div
         ref={logoRef}
-        className="relative z-10"
+        className="relative"
         style={{ opacity: 0 }}
       >
         <img
@@ -104,6 +102,11 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
           alt="DJ Nish"
           className="h-20 w-20"
         />
+        {/* Accent lines - animated via CSS */}
+        <div className="accent line-1" />
+        <div className="accent line-2" />
+        <div className="accent line-3" />
+        <div className="accent line-4" />
       </motion.div>
     </motion.div>
   );
@@ -117,7 +120,7 @@ export default function App() {
   return (
     <>
       <AnimatePresence>
-        {isLoading ? <ShaderIntro onComplete={() => setIsLoading(false)} /> : null}
+        {isLoading ? <RefinedIntro onComplete={() => setIsLoading(false)} /> : null}
       </AnimatePresence>
 
       <Navbar />

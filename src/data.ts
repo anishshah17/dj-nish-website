@@ -43,6 +43,7 @@ export const bookingPackages = [
 export const navItems = [
   { id: "home", label: "Home" },
   { id: "gallery", label: "Gallery" },
+  { id: "booking", label: "Booking" },
 ];
 
 // ─── Socials ─────────────────────────────────────────────────────────────────
