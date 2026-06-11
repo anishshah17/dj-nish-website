@@ -7,6 +7,7 @@ import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 
 import Navbar from "./sections/Navbar";
 import Hero from "./sections/Hero";
+import ShaderHeroPage from "./sections/ShaderHeroPage";
 import About from "./sections/About";
 import Gallery from "./sections/Gallery";
 import Instagram from "./sections/Instagram";
@@ -220,7 +221,7 @@ export default function App() {
       >
         <Navbar />
         <main>
-          <Hero />
+          <ShaderHeroPage />
           <About />
           <Gallery />
           <Instagram />
