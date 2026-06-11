@@ -1,131 +1,302 @@
-import { motion, useInView } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
-import gsap from "gsap";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import { ShaderGradientCanvas, ShaderGradient } from "@shadergradient/react";
 
 export default function Hero() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const [mousePos, setMousePos] = useState({ x: 0.5, y: 0.5 });
+  const rawX = useMotionValue(0);
+  const rawY = useMotionValue(0);
+  const x = useSpring(rawX, { stiffness: 40, damping: 18 });
+  const y = useSpring(rawY, { stiffness: 40, damping: 18 });
+  const logoX = useTransform(x, [-1, 1], [-14, 14]);
+  const logoY = useTransform(y, [-1, 1], [-8, 8]);
+  const bgX = useTransform(x, [-1, 1], [8, -8]);
+  const bgY = useTransform(y, [-1, 1], [4, -4]);
 
-  // Track mouse for subtle gradient shift
+  const [mounted, setMounted] = useState(false);
+
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
+    setMounted(true);
+    const handleMove = (e: MouseEvent) => {
       if (!containerRef.current) return;
       const rect = containerRef.current.getBoundingClientRect();
-      setMousePos({
-        x: (e.clientX - rect.left) / rect.width,
-        y: (e.clientY - rect.top) / rect.height,
-      });
+      rawX.set(((e.clientX - rect.left) / rect.width) * 2 - 1);
+      rawY.set(((e.clientY - rect.top) / rect.height) * 2 - 1);
     };
-
-    window.addEventListener("mousemove", handleMouseMove);
-    return () => window.removeEventListener("mousemove", handleMouseMove);
-  }, []);
-
-  // Animate EQ bars
-  useEffect(() => {
-    const bars = document.querySelectorAll(".eq-bar");
-    bars.forEach((bar, i) => {
-      const height = 20 + Math.random() * 60;
-      const delay = i * 0.05;
-      const duration = 0.8 + Math.random() * 0.4;
-      gsap.to(bar, {
-        height,
-        duration,
-        delay,
-        repeat: -1,
-        yoyo: true,
-        ease: "sine.inOut",
-      });
-    });
-  }, []);
+    window.addEventListener("mousemove", handleMove);
+    return () => window.removeEventListener("mousemove", handleMove);
+  }, [rawX, rawY]);
 
   return (
     <section
+      id="home"
       ref={containerRef}
-      className="relative h-screen w-full overflow-hidden"
-      style={{
-        background: "#050505",
-      }}
+      className="relative min-h-screen w-full flex flex-col items-center justify-center overflow-hidden"
+      style={{ background: "#050505" }}
     >
-      {/* Animated gradient background */}
+      {/* ── ShaderGradient1 as subtle background layer (low opacity) ── */}
       <motion.div
-        className="absolute inset-0"
-        animate={{
-          background: `radial-gradient(circle at ${mousePos.x * 100}% ${
-            mousePos.y * 100
-          }%, rgba(255, 0, 140, 0.15) 0%, rgba(21, 184, 255, 0.08) 30%, rgba(5, 5, 5, 0) 70%)`,
+        className="absolute inset-0 pointer-events-none"
+        style={{ x: bgX, y: bgY, opacity: 0.18 }}
+      >
+        <ShaderGradientCanvas
+          style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
+          pixelDensity={0.8}
+          fov={50}
+        >
+          <ShaderGradient
+            animate="on"
+            brightness={1}
+            cAzimuthAngle={180}
+            cDistance={4.51}
+            cPolarAngle={90}
+            cameraZoom={1}
+            color1="#ee00d6"
+            color2="#6bedfe"
+            color3="#863ee4"
+            envPreset="lobby"
+            grain="on"
+            lightType="3d"
+            positionX={-1.4}
+            positionY={0}
+            positionZ={0}
+            range="disabled"
+            rangeEnd={40}
+            rangeStart={0}
+            reflection={0.1}
+            rotationX={0}
+            rotationY={10}
+            rotationZ={50}
+            shader="defaults"
+            type="plane"
+            uAmplitude={1}
+            uDensity={1.5}
+            uFrequency={5.5}
+            uSpeed={0.3}
+            uStrength={3.8}
+            uTime={0}
+            wireframe={false}
+          />
+        </ShaderGradientCanvas>
+      </motion.div>
+
+      {/* ── Vignette overlay ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(ellipse 80% 80% at 50% 50%, transparent 30%, rgba(5,5,5,0.85) 100%)",
         }}
-        transition={{ type: "spring", damping: 30, stiffness: 100 }}
       />
 
-      {/* Moving blobs for extra vibrancy */}
-      <div className="absolute inset-0 pointer-events-none">
-        <div className="blob blob-1 absolute left-0 top-0 w-32 h-32 bg-brand-pink/10" />
-        <div className="blob blob-2 absolute right-0 bottom-0 w-40 h-40 bg-brand-cyan/10" />
-        <div className="blob blob-3 absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-48 h-48 bg-brand-purple/10" />
-      </div>
+      {/* ── Main content ── */}
+      <div className="relative z-10 flex flex-col items-center text-center px-6 gap-8 w-full max-w-5xl mx-auto">
 
-      {/* Main content */}
-      <div className="relative z-10 flex flex-col items-center justify-center gap-4 text-center px-6">
-        {/* Logo with glow */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ delay: 0.5, duration: 0.8, ease: "easeOut" }}
-        >
-          <div className="relative inline-block">
-            <img
+        {/* Availability badge */}
+        {mounted && (
+          <motion.div
+            className="flex items-center gap-2 px-4 py-1.5 rounded-full"
+            style={{
+              background: "rgba(255,255,255,0.05)",
+              border: "1px solid rgba(255,255,255,0.1)",
+              backdropFilter: "blur(8px)",
+            }}
+            initial={{ opacity: 0, y: -12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+          >
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75" />
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-green-400" />
+            </span>
+            <span
+              className="text-[10px] uppercase tracking-[0.25em] font-medium"
+              style={{ color: "rgba(255,255,255,0.55)" }}
+            >
+              Available for bookings
+            </span>
+          </motion.div>
+        )}
+
+        {/* Logo — hero centrepiece with mouse parallax */}
+        {mounted && (
+          <motion.div
+            className="relative"
+            style={{ x: logoX, y: logoY }}
+            initial={{ opacity: 0, scale: 0.88 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
+          >
+            {/* Rotating conic glow ring */}
+            <motion.div
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                transform: "scale(1.5)",
+                background:
+                  "conic-gradient(from 0deg, rgba(238,0,214,0.3), rgba(107,237,254,0.2), rgba(134,62,228,0.3), rgba(238,0,214,0.3))",
+                filter: "blur(28px)",
+              }}
+              animate={{ rotate: 360 }}
+              transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+            />
+            {/* Soft static glow */}
+            <div
+              className="absolute inset-0 rounded-full pointer-events-none"
+              style={{
+                transform: "scale(1.2)",
+                background:
+                  "radial-gradient(ellipse at center, rgba(238,0,214,0.25) 0%, transparent 70%)",
+                filter: "blur(20px)",
+              }}
+            />
+            <motion.img
               src="/nish-logo.png"
               alt="DJ Nish"
-              className="h-20 w-20 rounded-full object-cover"
-            />
-            {/* Outer glow pulse */}
-            <motion.div
-              className="absolute inset-0 rounded-full"
+              className="relative z-10 w-72 md:w-96 lg:w-[420px]"
               style={{
-                border: "2px solid rgba(255,0,140,0.4)",
-                opacity: 0,
+                filter:
+                  "drop-shadow(0 0 32px rgba(238,0,214,0.45)) drop-shadow(0 0 64px rgba(107,237,254,0.2))",
               }}
-              animate={{
-                opacity: [0, 0.6, 0],
-                scale: [0, 1.4, 1],
+              animate={{ y: [0, -10, 0] }}
+              transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+            />
+          </motion.div>
+        )}
+
+        {/* Tagline */}
+        {mounted && (
+          <motion.p
+            className="text-sm md:text-base tracking-[0.3em] uppercase font-light"
+            style={{ color: "rgba(255,255,255,0.35)", fontFamily: "'Montserrat', sans-serif" }}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.4 }}
+          >
+            Weddings · Corporate · Private Events · Clubs
+          </motion.p>
+        )}
+
+        {/* CTA row */}
+        {mounted && (
+          <motion.div
+            className="flex flex-col sm:flex-row gap-3 mt-2"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, delay: 0.65 }}
+          >
+            {/* Primary */}
+            <motion.a
+              href="#booking"
+              className="relative inline-flex items-center justify-center rounded-full px-10 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-white overflow-hidden"
+              style={{
+                background: "linear-gradient(135deg, #ee00d6 0%, #863ee4 50%, #6bedfe 100%)",
               }}
-              transition={{
-                delay: 0.8,
-                duration: 2.5,
-                repeat: Infinity,
-                ease: "easeInOut",
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.97 }}
+            >
+              <motion.span
+                className="absolute inset-0 rounded-full"
+                style={{
+                  background:
+                    "linear-gradient(105deg, transparent 40%, rgba(255,255,255,0.22) 50%, transparent 60%)",
+                  backgroundSize: "200% 100%",
+                  backgroundPosition: "-100% 0",
+                }}
+                whileHover={{ backgroundPosition: "200% 0" }}
+                transition={{ duration: 0.5 }}
+              />
+              <span className="relative z-10">Book a Set</span>
+            </motion.a>
+
+            {/* Secondary */}
+            <motion.a
+              href="#gallery"
+              className="inline-flex items-center justify-center rounded-full px-10 py-3.5 text-xs font-semibold uppercase tracking-[0.2em]"
+              style={{
+                border: "1px solid rgba(255,255,255,0.14)",
+                color: "rgba(255,255,255,0.5)",
+                background: "rgba(255,255,255,0.03)",
               }}
+              whileHover={{
+                borderColor: "rgba(238,0,214,0.5)",
+                color: "rgba(255,255,255,0.9)",
+                background: "rgba(238,0,214,0.06)",
+                scale: 1.05,
+              }}
+              whileTap={{ scale: 0.97 }}
+            >
+              View Gallery
+            </motion.a>
+          </motion.div>
+        )}
+
+        {/* Social proof strip */}
+        {mounted && (
+          <motion.div
+            className="flex items-center gap-6 mt-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.8, delay: 0.9 }}
+          >
+            {[
+              { value: "5+", label: "Years" },
+              { value: "200+", label: "Events" },
+              { value: "100%", label: "Satisfaction" },
+            ].map((stat, i) => (
+              <div key={i} className="flex flex-col items-center gap-0.5">
+                <span
+                  className="text-lg font-bold"
+                  style={{
+                    background: "linear-gradient(135deg, #ee00d6, #863ee4, #6bedfe)",
+                    WebkitBackgroundClip: "text",
+                    WebkitTextFillColor: "transparent",
+                    fontFamily: "'Montserrat', sans-serif",
+                  }}
+                >
+                  {stat.value}
+                </span>
+                <span
+                  className="text-[9px] uppercase tracking-[0.25em]"
+                  style={{ color: "rgba(255,255,255,0.25)" }}
+                >
+                  {stat.label}
+                </span>
+              </div>
+            ))}
+          </motion.div>
+        )}
+      </div>
+
+      {/* ── Scroll indicator ── */}
+      {mounted && (
+        <motion.div
+          className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+        >
+          <span
+            className="text-[9px] uppercase tracking-[0.35em] font-mono"
+            style={{ color: "rgba(255,255,255,0.18)" }}
+          >
+            Scroll
+          </span>
+          <div
+            className="w-[1px] h-10 overflow-hidden rounded-full"
+            style={{ background: "rgba(255,255,255,0.07)" }}
+          >
+            <motion.div
+              className="w-full"
+              style={{
+                background: "linear-gradient(to bottom, #ee00d6, #6bedfe)",
+                height: "50%",
+              }}
+              animate={{ y: ["-100%", "200%"] }}
+              transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             />
           </div>
         </motion.div>
-
-        {/* Animated EQ bars */}
-        <motion.div
-          className="flex w-32 space-x-2 mt-2"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.6 }}
-        >
-          {[...Array(5)].map((_, i) => (
-            <motion.div
-              key={i}
-              className="eq-bar w-2 bg-neon-pink rounded-full"
-              style={{ height: "20px" }}
-            />
-          ))}
-        </motion.div>
-
-        {/* Scroll hint */}
-        <motion.div
-          className="text-sm uppercase tracking-wider text-muted"
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 1.8, duration: 0.4 }}
-        >
-          Scroll down
-        </motion.div>
-      </div>
+      )}
     </section>
   );
 }
