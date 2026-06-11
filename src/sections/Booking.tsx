@@ -69,23 +69,15 @@ export default function Booking() {
     setStatus("sending");
 
     try {
-      // Only call the API if real credentials have been configured
-      const isConfigured =
-        EMAILJS_SERVICE_ID !== "service_fmp4vca" &&
-        EMAILJS_TEMPLATE_ID !== "template_tuwfsbp" &&
-        EMAILJS_PUBLIC_KEY !== "6-fet_sm43RD30w9G";
-
-      if (isConfigured) {
-        await sendEmail({
-          from_name: form.name,
-          from_email: form.email,
-          from_phone: form.phone,
-          event_date: form.date,
-          venue: form.venue,
-          vibe: form.vibe,
-          notes: form.notes,
-        });
-      }
+      await sendEmail({
+        from_name: form.name,
+        from_email: form.email,
+        from_phone: form.phone,
+        event_date: form.date,
+        venue: form.venue,
+        vibe: form.vibe,
+        notes: form.notes,
+      });
 
       setStatus("success");
       setForm(empty);
