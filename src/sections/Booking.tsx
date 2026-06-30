@@ -8,7 +8,7 @@ import { useRef, useState, type FormEvent } from "react";
  *   PUBLIC_KEY  — your EmailJS public key (e.g. "user_XXXXXXXXXX")
  *
  * The template should include these variables:
- *   {{from_name}}, {{email}}, {{from_phone}}, {{event_date}}, {{venue}}, {{vibe}}, {{notes}}
+ *   {{from_name}}, {{email}}, {{reply_to}}, {{from_phone}}, {{event_date}}, {{venue}}, {{vibe}}, {{notes}}, {{time}}
  *
  * All booking requests will be sent directly to the email address
  * configured in your EmailJS service.
@@ -72,11 +72,14 @@ export default function Booking() {
       await sendEmail({
         from_name: form.name,
         from_email: form.email,
+        reply_to: form.email,
+        email: form.email,
         from_phone: form.phone,
         event_date: form.date,
         venue: form.venue,
         vibe: form.vibe,
         notes: form.notes,
+        time: new Date().toLocaleString(),
       });
 
       setStatus("success");

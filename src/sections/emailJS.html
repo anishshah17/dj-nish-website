@@ -1,5 +1,5 @@
 <div style="font-family: system-ui, sans-serif, Arial; font-size: 12px;">
-<div>A message by {{name}} has been received. Kindly respond at your earliest convenience.</div>
+<div>A message by {{from_name}} has been received. Kindly respond at your earliest convenience.</div>
 <div style="margin-top: 20px; padding: 15px 0; border-width: 1px 0; border-style: dashed; border-color: lightgrey;">
 <table role="presentation">
 <tbody>
@@ -11,12 +11,13 @@
 <div style="color: #2c3e50; font-size: 16px;"><strong>{{from_name}}</strong></div>
 <div style="color: #cccccc; font-size: 13px;">{{time}}</div>
 <p style="font-size: 16px;">Name: {{from_name}}</p>
-<p style="font-size: 16px;">Email: {{from_email}}</p>
+<p style="font-size: 16px;">Email: <a href="mailto:{{email}}">{{email}}</a></p>
 <p style="font-size: 16px;">Phone: {{from_phone}}</p>
 <p style="font-size: 16px;">Event Date: {{event_date}}</p>
 <p style="font-size: 16px;">Venue: {{venue}}</p>
 <p style="font-size: 16px;">Description: {{vibe}}</p>
 <p style="font-size: 16px;">Notes: {{notes}}</p>
+<p style="font-size: 16px;">Reply directly to this message or email <a href="mailto:{{email}}">{{email}}</a>.</p>
 </td>
 </tr>
 </tbody>
