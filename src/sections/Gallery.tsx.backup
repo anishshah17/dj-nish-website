@@ -17,7 +17,7 @@ function VideoBadge() {
     <span
       className="absolute top-3 left-3 z-10 flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[9px] uppercase tracking-[0.2em] font-semibold"
       style={{
-        background: "rgba(30,58,138,0.75)",
+        background: "rgba(255,0,144,0.75)",
         backdropFilter: "blur(8px)",
         color: "#fff",
       }}
@@ -43,7 +43,7 @@ function LightboxCaption({ item }: { item: GalleryItem }) {
       <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.22em] text-white/45 font-medium">
         <span
           className="inline-block w-1.5 h-1.5 rounded-full"
-          style={{ background: item.type === "video" ? "rgba(30,58,138,0.8)" : "rgba(30,58,138,0.6)" }}
+          style={{ background: item.type === "video" ? "#ff0090" : "#6bedfe" }}
         />
         <span>{item.type === "video" ? "Video" : "Photo"}</span>
         {item.date && (
@@ -245,8 +245,8 @@ function GalleryCard({ item, index, isInView, onClick }: {
           style={{
             width: 64,
             height: 64,
-            background: "rgba(30,58,138,0.8)",
-            boxShadow: "0 0 32px rgba(30,58,138,0.5)",
+            background: "rgba(255,0,144,0.8)",
+            boxShadow: "0 0 32px rgba(255,0,144,0.5)",
           }}
         >
           {isVideo ? (
