@@ -37,7 +37,7 @@ export default function Hero() {
       {/* ── ShaderGradient1 as subtle background layer (low opacity) ── */}
       <motion.div
         className="absolute inset-0 pointer-events-none"
-        style={{ x: bgX, y: bgY, opacity: 0.18 }}
+        style={{ x: bgX, y: bgY, opacity: 0.1 }}
       >
         <ShaderGradientCanvas
           style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}
@@ -46,14 +46,14 @@ export default function Hero() {
         >
           <ShaderGradient
             animate="on"
-            brightness={1}
+            brightness={0.72}
             cAzimuthAngle={180}
             cDistance={4.51}
             cPolarAngle={90}
             cameraZoom={1}
-            color1="#ee00d6"
-            color2="#6bedfe"
-            color3="#863ee4"
+            color1="#6f5a63"
+            color2="#6b7f86"
+            color3="#4b3f5c"
             envPreset="lobby"
             grain="on"
             lightType="3d"
@@ -73,7 +73,7 @@ export default function Hero() {
             uDensity={1.5}
             uFrequency={5.5}
             uSpeed={0.3}
-            uStrength={3.8}
+            uStrength={2.35}
             uTime={0}
             wireframe={false}
           />
@@ -133,7 +133,7 @@ export default function Hero() {
               style={{
                 transform: "scale(1.5)",
                 background:
-                  "conic-gradient(from 0deg, rgba(238,0,214,0.3), rgba(107,237,254,0.2), rgba(134,62,228,0.3), rgba(238,0,214,0.3))",
+                  "conic-gradient(from 0deg, rgba(128,103,112,0.16), rgba(108,126,130,0.12), rgba(82,70,96,0.16), rgba(128,103,112,0.16))",
                 filter: "blur(28px)",
               }}
               animate={{ rotate: 360 }}
@@ -145,7 +145,7 @@ export default function Hero() {
               style={{
                 transform: "scale(1.2)",
                 background:
-                  "radial-gradient(ellipse at center, rgba(238,0,214,0.25) 0%, transparent 70%)",
+                  "radial-gradient(ellipse at center, rgba(128,103,112,0.16) 0%, transparent 70%)",
                 filter: "blur(20px)",
               }}
             />
@@ -155,7 +155,7 @@ export default function Hero() {
               className="relative z-10 w-72 md:w-96 lg:w-[420px]"
               style={{
                 filter:
-                  "drop-shadow(0 0 32px rgba(238,0,214,0.45)) drop-shadow(0 0 64px rgba(107,237,254,0.2))",
+                  "drop-shadow(0 0 28px rgba(128,103,112,0.32)) drop-shadow(0 0 54px rgba(108,126,130,0.12))",
               }}
               animate={{ y: [0, -10, 0] }}
               transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
@@ -189,7 +189,7 @@ export default function Hero() {
               href="#booking"
               className="relative inline-flex items-center justify-center rounded-full px-10 py-3.5 text-xs font-semibold uppercase tracking-[0.2em] text-white overflow-hidden"
               style={{
-                background: "linear-gradient(135deg, #ee00d6 0%, #863ee4 50%, #6bedfe 100%)",
+                background: "linear-gradient(135deg, #7b6670 0%, #5a4c67 52%, #66797f 100%)",
               }}
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
@@ -218,9 +218,9 @@ export default function Hero() {
                 background: "rgba(255,255,255,0.03)",
               }}
               whileHover={{
-                borderColor: "rgba(238,0,214,0.5)",
+                borderColor: "rgba(128,103,112,0.55)",
                 color: "rgba(255,255,255,0.9)",
-                background: "rgba(238,0,214,0.06)",
+                background: "rgba(128,103,112,0.08)",
                 scale: 1.05,
               }}
               whileTap={{ scale: 0.97 }}
@@ -247,7 +247,7 @@ export default function Hero() {
                 <span
                   className="text-lg font-bold"
                   style={{
-                    background: "linear-gradient(135deg, #ee00d6, #863ee4, #6bedfe)",
+                    background: "linear-gradient(135deg, #a8929b, #786982, #8da0a5)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
                     fontFamily: "'Unbounded', sans-serif",
@@ -288,7 +288,7 @@ export default function Hero() {
             <motion.div
               className="w-full"
               style={{
-                background: "linear-gradient(to bottom, #ee00d6, #6bedfe)",
+                background: "linear-gradient(to bottom, #8d747e, #75898f)",
                 height: "50%",
               }}
               animate={{ y: ["-100%", "200%"] }}

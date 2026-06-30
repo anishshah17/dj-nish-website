@@ -71,7 +71,7 @@ export default function Booking() {
     try {
       await sendEmail({
         from_name: form.name,
-        from_email: form.email,
+        email: form.email,
         from_phone: form.phone,
         event_date: form.date,
         venue: form.venue,
