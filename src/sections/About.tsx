@@ -93,7 +93,7 @@ export default function About() {
             {/* Heading */}
             <motion.h2
               className="text-4xl sm:text-5xl font-bold text-white leading-tight"
-              style={{ fontFamily: "'Montserrat', sans-serif" }}
+              style={{ fontFamily: "'Unbounded', sans-serif" }}
               initial={{ opacity: 0, y: 16 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.7, delay: 0.18 }}
@@ -143,7 +143,7 @@ export default function About() {
                       <span
                         className="text-2xl sm:text-3xl font-bold leading-none"
                         style={{
-                          fontFamily: "'Montserrat', sans-serif",
+                          fontFamily: "'Unbounded', sans-serif",
                           background: "linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.55) 100%)",
                           WebkitBackgroundClip: "text",
                           WebkitTextFillColor: "transparent",

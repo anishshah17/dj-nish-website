@@ -167,7 +167,7 @@ export default function Hero() {
         {mounted && (
           <motion.p
             className="text-sm md:text-base tracking-[0.3em] uppercase font-light"
-            style={{ color: "rgba(255,255,255,0.35)", fontFamily: "'Montserrat', sans-serif" }}
+            style={{ color: "rgba(255,255,255,0.35)", fontFamily: "'Space Grotesk', sans-serif" }}
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.4 }}
@@ -250,7 +250,7 @@ export default function Hero() {
                     background: "linear-gradient(135deg, #ee00d6, #863ee4, #6bedfe)",
                     WebkitBackgroundClip: "text",
                     WebkitTextFillColor: "transparent",
-                    fontFamily: "'Montserrat', sans-serif",
+                    fontFamily: "'Unbounded', sans-serif",
                   }}
                 >
                   {stat.value}

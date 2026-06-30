@@ -7,8 +7,9 @@ export default {
   theme: {
     extend: {
       fontFamily: {
-        body: ["Inter", "sans-serif"],
-        display: ["Instrument Serif", "serif"],
+        body: ["Space Grotesk", "sans-serif"],
+        display: ["Unbounded", "sans-serif"],
+        mono: ["JetBrains Mono", "ui-monospace", "monospace"],
       },
       colors: {
         bg: "oklch(var(--bg) / <alpha-value>)",

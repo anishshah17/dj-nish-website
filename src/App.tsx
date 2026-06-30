@@ -205,7 +205,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
       <p
         ref={taglineRef}
         className="absolute z-20 bottom-20 text-[11px] tracking-[0.45em] uppercase font-light"
-        style={{ color: "rgba(255,255,255,0.6)", opacity: 0, fontFamily: "'Montserrat', sans-serif" }}
+        style={{ color: "rgba(255,255,255,0.6)", opacity: 0, fontFamily: "'Space Grotesk', sans-serif" }}
       >
         DJ · Producer · Chicago
       </p>

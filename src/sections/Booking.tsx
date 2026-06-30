@@ -130,7 +130,7 @@ export default function Booking() {
           </p>
           <h2
             className="text-4xl sm:text-5xl font-bold text-white"
-            style={{ fontFamily: "'Montserrat', sans-serif" }}
+            style={{ fontFamily: "'Unbounded', sans-serif" }}
           >
             Request a Booking
           </h2>
@@ -171,7 +171,7 @@ export default function Booking() {
                 </svg>
               </div>
               <div>
-                <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "'Montserrat', sans-serif" }}>
+                <h3 className="text-2xl font-bold text-white mb-2" style={{ fontFamily: "'Unbounded', sans-serif" }}>
                   Request Sent!
                 </h3>
                 <p className="text-white/45 text-sm max-w-sm">

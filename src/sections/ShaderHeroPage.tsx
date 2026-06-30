@@ -100,7 +100,7 @@ export default function ShaderHeroPage() {
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
               color: "#fff",
-              fontFamily: "'Montserrat', sans-serif",
+              fontFamily: "'Unbounded', sans-serif",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "rgba(255,0,144,0.25)";
@@ -122,7 +122,7 @@ export default function ShaderHeroPage() {
               backdropFilter: "blur(16px)",
               WebkitBackdropFilter: "blur(16px)",
               color: "rgba(255,255,255,0.85)",
-              fontFamily: "'Montserrat', sans-serif",
+              fontFamily: "'Unbounded', sans-serif",
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.background = "rgba(255,255,255,0.18)";
@@ -147,7 +147,7 @@ export default function ShaderHeroPage() {
               <span
                 className="text-xl font-bold"
                 style={{
-                  fontFamily: "'Montserrat', sans-serif",
+                  fontFamily: "'Unbounded', sans-serif",
                   color: "#fff",
                   textShadow: "0 0 20px rgba(255,0,144,0.6)",
                 }}
