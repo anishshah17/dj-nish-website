@@ -131,27 +131,27 @@ function Lightbox({ item, onClose }: { item: GalleryItem; onClose: () => void })
           transition={{ type: "spring", stiffness: 260, damping: 28 }}
           onClick={(e) => e.stopPropagation()}
         >
-          {item.type === "video" && !videoFailed ? (
+          {item.type === "video" && item.video && !videoFailed ? (
             <video
               key={`video-${item.id}`}
               ref={videoRef}
-              src={item.video}
               poster={item.poster}
               controls
               autoPlay
               playsInline
               preload="metadata"
-              className="w-full aspect-video bg-black"
-              style={{ display: "block" }}
+              className="max-h-[82vh] w-full bg-black object-contain"
+              style={{ display: "block", aspectRatio: "16 / 9" }}
               onError={() => setVideoFailed(true)}
             >
+              <source src={item.video} type="video/mp4" />
               Your browser does not support the video tag.
             </video>
-          ) : item.type === "video" && videoFailed ? (
+          ) : item.type === "video" && (videoFailed || !item.video) ? (
             <div className="w-full aspect-video flex flex-col items-center justify-center gap-3 bg-black/80 text-white/70 text-sm">
               <p>This video couldn't be loaded.</p>
               <a
-                href={item.video}
+                href={item.video ?? "#"}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-[#ff0090] underline underline-offset-4"
@@ -202,6 +202,7 @@ function GalleryCard({ item, index, isInView, onClick }: {
   onClick: () => void;
 }) {
   const isVideo = item.type === "video";
+  const videoSrc = isVideo ? item.video : undefined;
   const thumbnail = isVideo ? item.poster : item.image;
   const isTall = index % 3 === 0;
 
@@ -221,8 +222,21 @@ function GalleryCard({ item, index, isInView, onClick }: {
       role="button"
       aria-label={`Open ${item.type}: ${item.title}`}
     >
-      {/* Thumbnail */}
-      {thumbnail && (
+      {/* Thumbnail / playable preview */}
+      {isVideo && videoSrc ? (
+        <video
+          src={videoSrc}
+          poster={thumbnail}
+          muted
+          loop
+          playsInline
+          preload="metadata"
+          className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-108"
+          style={{ minHeight: "inherit" }}
+          onMouseEnter={(e) => { void e.currentTarget.play().catch(() => undefined); }}
+          onMouseLeave={(e) => { e.currentTarget.pause(); }}
+        />
+      ) : thumbnail ? (
         <img
           src={thumbnail}
           alt={item.title}
@@ -230,10 +244,16 @@ function GalleryCard({ item, index, isInView, onClick }: {
           className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-108"
           style={{ minHeight: "inherit" }}
         />
-      )}
+      ) : null}
 
       {/* Video badge */}
       {isVideo && <VideoBadge />}
+
+      {isVideo && (
+        <div className="absolute right-3 top-3 z-10 rounded-full bg-black/60 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-white backdrop-blur-md">
+          Watch
+        </div>
+      )}
 
       {/* Hover overlay */}
       <div
