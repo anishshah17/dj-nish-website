@@ -15,6 +15,22 @@ import Footer from "./sections/Footer";
 
 gsap.registerPlugin(ScrollTrigger);
 
+const INTRO_SHADER_COLORS = {
+  primary: "#9f4f8f",
+  secondary: "#2f6f8f",
+  accent: "#6f4aa8",
+};
+
+const INTRO_GLOW_STYLE =
+  "radial-gradient(ellipse at center, rgba(159,79,143,0.34) 0%, rgba(47,111,143,0.26) 42%, transparent 70%)";
+
+const INTRO_LOGO_FILTER =
+  "drop-shadow(0 0 46px rgba(159,79,143,0.48)) drop-shadow(0 0 96px rgba(47,111,143,0.34)) brightness(1.06)";
+
+const INTRO_PROGRESS_GRADIENT =
+  `linear-gradient(to right, ${INTRO_SHADER_COLORS.primary}, ${INTRO_SHADER_COLORS.accent}, ${INTRO_SHADER_COLORS.secondary})`;
+
+
 // ─── Smooth scroll ────────────────────────────────────────────────────────────
 function useLenis() {
   useEffect(() => {
@@ -143,14 +159,14 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
         >
           <ShaderGradient
             animate="on"
-            brightness={1.5}
+            brightness={1.05}
             cAzimuthAngle={180}
             cDistance={4.79}
             cPolarAngle={115}
             cameraZoom={1}
-            color1="#ff00e5"
-            color2="#00e5ff"
-            color3="#9b30ff"
+            color1={INTRO_SHADER_COLORS.primary}
+            color2={INTRO_SHADER_COLORS.secondary}
+            color3={INTRO_SHADER_COLORS.accent}
             envPreset="city"
             grain="off"
             lightType="3d"
@@ -160,7 +176,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
             range="disabled"
             rangeEnd={40}
             rangeStart={0}
-            reflection={0.4}
+            reflection={0.22}
             rotationX={0}
             rotationY={0}
             rotationZ={235}
@@ -169,8 +185,8 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
             uAmplitude={0}
             uDensity={1.5}
             uFrequency={5.5}
-            uSpeed={0.35}
-            uStrength={5.5}
+            uSpeed={0.18}
+            uStrength={3.2}
             uTime={0.2}
             wireframe={false}
           />
@@ -183,7 +199,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
         className="absolute z-10 rounded-full pointer-events-none"
         style={{
           width: 360, height: 360,
-          background: "radial-gradient(ellipse at center, rgba(255,0,229,0.75) 0%, rgba(155,48,255,0.5) 40%, transparent 70%)",
+          background: INTRO_GLOW_STYLE,
           filter: "blur(48px)",
           opacity: 0,
         }}
@@ -196,7 +212,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
           alt="DJ Nish"
           className="w-60 md:w-80"
           style={{
-            filter: "drop-shadow(0 0 60px rgba(255,0,229,1)) drop-shadow(0 0 120px rgba(0,229,255,0.6)) brightness(1.15)",
+            filter: INTRO_LOGO_FILTER,
           }}
         />
       </div>
@@ -214,7 +230,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
       <motion.div
         className="absolute bottom-0 left-0 h-[2px]"
         style={{
-          background: "linear-gradient(to right, #ee00d6, #863ee4, #6bedfe)",
+          background: INTRO_PROGRESS_GRADIENT,
           transformOrigin: "left center",
         }}
         initial={{ scaleX: 0 }}
