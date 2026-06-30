@@ -151,6 +151,9 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
             color1="#9f4f8f"
             color2="#2f6f8f"
             color3="#6f4aa8"
+            color1="#8f6f5a"
+            color2="#415a77"
+            color3="#b08968"
             envPreset="city"
             grain="off"
             lightType="3d"
@@ -184,6 +187,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
         style={{
           width: 360, height: 360,
           background: "radial-gradient(ellipse at center, rgba(159,79,143,0.34) 0%, rgba(47,111,143,0.26) 42%, transparent 70%)",
+          background: "radial-gradient(ellipse at center, rgba(176,137,104,0.38) 0%, rgba(65,90,119,0.28) 42%, transparent 70%)",
           filter: "blur(48px)",
           opacity: 0,
         }}
@@ -197,6 +201,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
           className="w-60 md:w-80"
           style={{
             filter: "drop-shadow(0 0 46px rgba(159,79,143,0.48)) drop-shadow(0 0 96px rgba(47,111,143,0.34)) brightness(1.06)",
+            filter: "drop-shadow(0 0 46px rgba(176,137,104,0.55)) drop-shadow(0 0 96px rgba(65,90,119,0.35)) brightness(1.06)",
           }}
         />
       </div>
@@ -215,6 +220,7 @@ function ShaderIntro({ onComplete }: { onComplete: () => void }) {
         className="absolute bottom-0 left-0 h-[2px]"
         style={{
           background: "linear-gradient(to right, #9f4f8f, #6f4aa8, #2f6f8f)",
+          background: "linear-gradient(to right, #8f6f5a, #415a77, #b08968)",
           transformOrigin: "left center",
         }}
         initial={{ scaleX: 0 }}

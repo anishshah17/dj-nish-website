@@ -9,6 +9,7 @@ import { useRef, useState, type FormEvent } from "react";
  *
  * The template should include these variables:
  *   {{from_name}}, {{email}}, {{reply_to}}, {{from_phone}}, {{event_date}}, {{venue}}, {{vibe}}, {{notes}}, {{time}}
+ *   {{from_name}}, {{from_email}}, {{reply_to}}, {{from_phone}}, {{event_date}}, {{venue}}, {{vibe}}, {{notes}}, {{time}}
  *
  * All booking requests will be sent directly to the email address
  * configured in your EmailJS service.
