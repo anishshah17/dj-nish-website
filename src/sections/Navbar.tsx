@@ -42,6 +42,8 @@ export default function Navbar() {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const closeMenu = () => setOpen(false);
+
   return (
     <>
       <motion.header
@@ -78,6 +80,14 @@ export default function Navbar() {
                 )}
               </button>
             ))}
+            <a
+              href="https://square.link/u/f4MeDGUi"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="relative px-4 py-2 text-xs font-medium uppercase tracking-[0.12em] text-soft-gray transition-colors duration-200 hover:text-white"
+            >
+              Pay
+            </a>
             <button
               onClick={() => scrollTo("booking")}
               type="button"
@@ -132,6 +142,18 @@ export default function Navbar() {
                   {item.label}
                 </motion.button>
               ))}
+              <motion.a
+                href="https://square.link/u/f4MeDGUi"
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={closeMenu}
+                className="text-xl font-semibold text-white transition-colors hover:text-neon-pink uppercase tracking-[0.08em]"
+                initial={{ opacity: 0, y: 16 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: navItems.length * 0.06 }}
+              >
+                Pay
+              </motion.a>
               <motion.button
                 onClick={() => scrollTo("booking")}
                 type="button"
@@ -142,7 +164,7 @@ export default function Navbar() {
                 }}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: navItems.length * 0.06 }}
+                transition={{ delay: (navItems.length + 1) * 0.06 }}
               >
                 Book Me
               </motion.button>
