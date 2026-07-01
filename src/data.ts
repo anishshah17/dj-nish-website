@@ -46,12 +46,12 @@ export const galleryItems: GalleryItem[] = [
   },
   {
     id: 5,
-    title: "Grad Party",
-    subtitle: "2010s mix for a private graduation party",
-    event: "Ashyana Banquets · Aurora, IL",
-    date: "July 2024",
+    title: "Elementary School Clap-Out",
+    subtitle: "Kid-friendly set for a elementary school clap-out",
+    event: "Steck Elementary School · Aurora, IL",
+    date: "May 2026",
     type: "image",
-    image: "/gallery/My_Grad_Party_by_Portraits_by_CeCee.jpg",
+    image: "/gallery/IMG_1167.jpg",
   },
   {
     id: 6,
