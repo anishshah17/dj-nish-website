@@ -1,0 +1,34 @@
+options:
+  logging: CLOUD_LOGGING_ONLY
+
+steps:
+  # Step 1: Build the Docker image using the Dockerfile in your repo root
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'build',
+      '--no-cache',
+      '--platform', 'linux/amd64',
+      '-t', 'us-central1-docker.pkg.dev/ncbf2026/cbf-website-repo/fairweb:latest',
+      '-f', 'Dockerfile',
+      '.'
+    ]
+
+  # Step 2: Push the compiled image into Artifact Registry
+  - name: 'gcr.io/cloud-builders/docker'
+    args: [
+      'push',
+      'us-central1-docker.pkg.dev/ncbf2026/cbf-website-repo/fairweb:latest'
+    ]
+
+  # Step 3: Deploy that image directly into Cloud Run
+  - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+    entrypoint: gcloud
+    args: [
+      'run', 'deploy', 'dj-nish-website',
+      '--image', 'us-central1-docker.pkg.dev/ncbf2026/cbf-website-repo/fairweb:latest',
+      '--region', 'us-central1',
+      '--allow-unauthenticated'
+    ]
+
+images:
+  - 'us-central1-docker.pkg.dev/ncbf2026/cbf-website-repo/fairweb:latest'
