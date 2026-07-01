@@ -3,7 +3,7 @@ import { useInView, motion } from "framer-motion";
 
 const stats = [
   { value: 5, suffix: "+", label: "Years" },
-  { value: 200, suffix: "+", label: "Events" },
+  { value: 25, suffix: "+", label: "Events" },
   { value: 100, suffix: "%", label: "Satisfaction" },
 ];
 
@@ -109,10 +109,10 @@ export default function About() {
               transition={{ duration: 0.7, delay: 0.28 }}
             >
               <p className="text-white/45 leading-relaxed text-base max-w-xl">
-                DJ Nish blends technical skill, crowd reading, and seamless mixing to create unforgettable experiences at weddings, corporate events, private celebrations, and live venues.
+                With over five years of experience, I don't just play music. I curate the atmosphere. Every set is tailored to evolve with the room, ensuring the energy remains high from start to finish.
               </p>
               <p className="text-white/30 leading-relaxed text-sm max-w-xl">
-                With over 5 years of experience, I specialise in reading the room and crafting sets that evolve with the energy. Every mix is tailored to create the perfect atmosphere.
+                From high-energy parties and private celebrations to cultural events and neighborhood gatherings, I specialize in crafting bespoke experiences that turn every event into an unforgettable soundtrack.
               </p>
             </motion.div>
 
