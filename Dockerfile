@@ -1,4 +1,3 @@
-cat << 'EOF' > Dockerfile
 # Stage 1: Build the app
 FROM node:20-slim AS build
 WORKDIR /app
@@ -26,4 +25,3 @@ RUN printf 'server {\n\
 COPY --from=build /app/dist /usr/share/nginx/html
 EXPOSE 8080
 CMD ["nginx", "-g", "daemon off;"]
-EOF
