@@ -2,33 +2,33 @@ options:
   logging: CLOUD_LOGGING_ONLY
 
 steps:
-  # Step 1: Build the Docker image using your current project ID
+  # Step 1: Build the image targeting your new Artifact Registry repository
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'build',
       '--no-cache',
       '--platform', 'linux/amd64',
-      '-t', 'gcr.io/$PROJECT_ID/dj-nish-website:latest',
+      '-t', 'us-central1-docker.pkg.dev/$PROJECT_ID/website-repo/dj-nish-website:latest',
       '-f', 'Dockerfile',
       '.'
     ]
 
-  # Step 2: Push the image to your project's container registry
+  # Step 2: Push the image into the created repository
   - name: 'gcr.io/cloud-builders/docker'
     args: [
       'push',
-      'gcr.io/$PROJECT_ID/dj-nish-website:latest'
+      'us-central1-docker.pkg.dev/$PROJECT_ID/website-repo/dj-nish-website:latest'
     ]
 
-  # Step 3: Deploy to Cloud Run
+  # Step 3: Pull from Artifact Registry and deploy straight into Cloud Run
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args: [
       'run', 'deploy', 'dj-nish-website',
-      '--image', 'gcr.io/$PROJECT_ID/dj-nish-website:latest',
+      '--image', 'us-central1-docker.pkg.dev/$PROJECT_ID/website-repo/dj-nish-website:latest',
       '--region', 'us-central1',
       '--allow-unauthenticated'
     ]
 
 images:
-  - 'gcr.io/$PROJECT_ID/dj-nish-website:latest'
+  - 'us-central1-docker.pkg.dev/$PROJECT_ID/website-repo/dj-nish-website:latest'
