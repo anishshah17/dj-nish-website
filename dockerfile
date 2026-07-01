@@ -8,9 +8,9 @@ RUN npm run build
 
 # Stage 2: Serve the app with NGINX
 FROM nginx:alpine
-# Copy the built files from the previous stage to the NGINX folder
+# Copy the built files from the previous stage to the NGINX folder.
 COPY --from=build /app/dist /usr/share/nginx/html
-# Replace default NGINX config with one that listens on port 8080
+# Replace default NGINX config with one that listens on port 8080.
 COPY <<EOF /etc/nginx/conf.d/default.conf
 server {
     listen 8080;
