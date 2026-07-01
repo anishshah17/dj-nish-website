@@ -240,7 +240,7 @@ export default function Hero() {
           >
             {[
               { value: "5+", label: "Years" },
-              { value: "25+", label: "Events" },
+              { value: "50+", label: "Events" },
               { value: "100%", label: "Satisfaction" },
             ].map((stat, i) => (
               <div key={i} className="flex flex-col items-center gap-0.5">
