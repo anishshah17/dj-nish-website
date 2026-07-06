@@ -75,7 +75,7 @@ export default function ShaderHeroPage() {
             <img
               src="/nish-logo.png"
               alt="DJ Nish"
-              className="relative w-52 md:w-72 lg:w-80 drop-shadow-2xl"
+              className="relative max-w-[90vw] w-24 sm:w-32 md:w-40 lg:w-48 drop-shadow-2xl"
               style={{
                 filter:
                   "drop-shadow(0 0 40px rgba(255,0,144,0.8)) drop-shadow(0 0 80px rgba(172,88,225,0.4)) brightness(1.1)",

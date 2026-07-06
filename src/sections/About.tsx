@@ -141,7 +141,7 @@ export default function About() {
                       transition={{ duration: 0.5, delay: 0.55 + i * 0.08 }}
                     >
                       <span
-                        className="text-2xl sm:text-3xl font-bold leading-none"
+                        className="text-base sm:text-lg lg:text-xl font-bold leading-none"
                         style={{
                           fontFamily: "'Unbounded', sans-serif",
                           background: "linear-gradient(135deg, #fff 0%, rgba(255,255,255,0.55) 100%)",
