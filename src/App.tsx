@@ -34,6 +34,10 @@ const INTRO_PROGRESS_GRADIENT =
 // ─── Smooth scroll ────────────────────────────────────────────────────────────
 function useLenis() {
   useEffect(() => {
+    // Disable on touch devices (primary input is touch)
+    if (window.matchMedia('(pointer: coarse)').matches) {
+      return;
+    }
     const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1 });
     const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);

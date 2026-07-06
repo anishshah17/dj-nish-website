@@ -72,8 +72,8 @@ export default function Booking() {
       await sendEmail({
         from_name: form.name,
         from_email: form.email,
-        email: form.email,
         reply_to: form.email,
+        email: form.email,
         from_phone: form.phone,
         event_date: form.date,
         venue: form.venue,
@@ -88,7 +88,6 @@ export default function Booking() {
       setStatus("error");
     }
   };
-
 
   const inputClass =
     "w-full rounded-xl border bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/30 focus:outline-none transition-all duration-200 focus:bg-white/8"
