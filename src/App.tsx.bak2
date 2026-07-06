@@ -38,7 +38,7 @@ function useLenis() {
     if (window.matchMedia('(pointer: coarse)').matches) {
       return;
     }
-    const lenis = new Lenis({ lerp: 0.08, wheelMultiplier: 0.8 });
+    const lenis = new Lenis({ lerp: 0.1, wheelMultiplier: 1 });
     const raf = (time: number) => { lenis.raf(time); requestAnimationFrame(raf); };
     requestAnimationFrame(raf);
     return () => lenis.destroy();

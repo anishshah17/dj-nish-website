@@ -56,7 +56,7 @@ export default function About() {
           {/* Left: Photo */}
           <motion.div
             ref={photoRef}
-            className="relative h-[500px] md:h-[620px] rounded-3xl overflow-hidden"
+            className="relative max-h-[70vh] w-full flex items-center justify-center rounded-3xl overflow-hidden"
             style={{
               clipPath: "inset(100% 0 0 0)",
               transition: "clip-path 1.3s cubic-bezier(0.16,1,0.3,1)",
@@ -65,7 +65,7 @@ export default function About() {
             <img
               src="/IMG-removebg-preview.png"
               alt="DJ Nish"
-              className="w-full h-full object-cover object-center"
+              className="w-full h-auto object-contain"
             />
             <div
               className="absolute inset-0"
